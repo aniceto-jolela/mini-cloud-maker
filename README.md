@@ -24,34 +24,32 @@ Permitir que qualquer pessoa crie sua própria **mini nuvem** local com MinIO �
 - Exibir estatísticas básicas de uso;
 - Funcionar 100% offline.
 
-🧩 2. Estrutura Geral do Sistema
+🧩 2. Estrutura Geral do Sistema v1.0
 ````
-Mini Cloud Maker/
+MiniCloudMaker/
 │
-├── backend/             # API local + gerenciamento do MinIO
-│   ├── server.js        # Node.js + Express
-│   ├── minio.js         # Conexão e operações com MinIO
-│   ├── config.json      # Configurações locais
-│   └── auth/            # Autenticação local (JWT + bcrypt)
+├── backend/
+│   ├── server.py              → API local Flask
+│   ├── minio_manager.py       → Controle do MinIO
+│   ├── config.json            → Configurações locais
+│   └── storage/               → Dados e binário do MinIO
 │
-├── frontend/            # Interface (React + Tailwind)
-│   ├── src/
-│   │   ├── pages/
-│   │   ├── components/
-│   │   ├── services/
-│   │   └── App.jsx
-│   └── public/
+├── frontend/                  → Projeto React + Vite
+│   ├── index.html
+│   ├── package.json
+│   ├── vite.config.js
+│   └── src/
+│       ├── App.jsx
+│       ├── components/
+│       │   ├── FileUpload.jsx
+│       │   ├── FileList.jsx
+│       │   └── StatsPanel.jsx
+│       └── api.js             → Comunicação com o backend Flask
 │
-├── installer/           # Script para empacotar e instalar MinIO
-│   ├── install.sh / .bat
-│   └── setup-config.json
+├── installer/
+│   └── setup_minio.py         → Baixa e inicia o MinIO localmente
 │
-├── database/            # SQLite local para usuários/config
-│   └── mini-cloud.db
-│
-├── electron/            # Empacotamento desktop
-│   ├── main.js
-│   └── preload.js
-│
-└── package.json
+├── app.py                     → Inicializador geral (backend + frontend)
+└── README.md
+
 ````
