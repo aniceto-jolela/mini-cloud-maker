@@ -1,10 +1,10 @@
 [![visual studio code](https://img.shields.io/badge/ide-visual_studio_code_1.103.2-purple)](https://code.visualstudio.com/download)
 [![nodejs](https://img.shields.io/badge/nodejs-24.7.0-blue)](https://nodejs.org/en/download/current)
 [![npm](https://img.shields.io/badge/npm-11.5.1-blue)](https://nodejs.org/en/download/current)
-[![framework express](https://img.shields.io/badge/express-blue)](https://expressjs.com/)
+[![flask](https://img.shields.io/badge/flask-blue)](https://flask.palletsprojects.com/en/stable/installation/)
 
 # Mini Cloud Maker
-***MVP v1.0***
+***MVP v1.1***
 
 ***🧠 Mensagem-chave do Mini Cloud Maker***
 
@@ -24,7 +24,7 @@ Permitir que qualquer pessoa crie sua própria **mini nuvem** local com MinIO �
 - Exibir estatísticas básicas de uso;
 - Funcionar 100% offline.
 
-🧩 2. Estrutura Geral do Sistema v1.0
+🧩 2. Estrutura Geral do Sistema v1.1
 ````
 MiniCloudMaker/
 │
@@ -45,6 +45,11 @@ MiniCloudMaker/
 │       │   ├── FileList.jsx
 │       │   └── StatsPanel.jsx
 │       └── api.js             → Comunicação com o backend Flask
+│
+├── electron/
+│   ├── main.js             → Inicia o app Electron e o backend Python
+│   ├── preload.js          → Comunicação segura com o frontend
+│   └── package.json        → Configuração do app desktop
 │
 ├── installer/
 │   └── setup_minio.py         → Baixa e inicia o MinIO localmente

@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify, send_file
 from flask_cors import CORS
 from minio import Minio
-import os, psutil
+import os, psutil, json
 
 app = Flask(__name__)
 CORS(app)
@@ -18,6 +18,22 @@ client = Minio(MINIO_URL, access_key=ACCESS_KEY, secret_key=SECRET_KEY, secure=F
 # Garante o bucket
 if not client.bucket_exists(BUCKET_NAME):
     client.make_bucket(BUCKET_NAME)
+
+with open("backend/config.json", "r") as f:
+    CONFIG = json.load(f)
+
+@app.route("/api/login", methods=["POST"])
+def login():
+    data = request.json
+    if not data:
+        return jsonify({"success": False, "error": "Nenhum dado enviado"}), 400
+    username = data.get("username")
+    password = data.get("password")
+
+    if username == CONFIG["username"] and password == CONFIG["password"]:
+        return jsonify({"success": True})
+    else:
+        return jsonify({"success": False, "error": "Credenciais inválidas"}), 401
 
 @app.route("/api/upload", methods=["POST"])
 def upload_file():

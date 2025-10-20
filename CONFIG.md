@@ -5,7 +5,7 @@
 
 
 
-####  Configuração do Backend (Flask)
+###  Configuração do Backend (Flask)
 
 ##### Virtual environments
 ```bash
@@ -32,9 +32,7 @@ pip install flask flask-cors minio psutil
 python backend/server.py
 ```
 
-
-
-####  Configure the frontend (React + Vite):
+### Configure the frontend (React + Vite):
 
 ```bash
 cd frontend
@@ -43,7 +41,6 @@ npm run dev
 ```
 - npm run dev
 http://localhost:5173
-
 
 
 **CORS (Cross-Origin Resource Sharing):** Por padrão, o navegador bloqueia requisições entre portas diferentes (3000 do backend e 5173 do frontend). É necessario configurar o NestJS para permitir essas requisições
@@ -56,5 +53,23 @@ login: minioadmin
 senha: minioadmin
 
 
+### Install Electron inside the project (root):
+```bash
+cd MiniCloudMaker
+npm init -y
+npm install electron concurrently cross-env
+```
 
+#### Generating the Frontend Build
+```bash
+cd frontend
+npm run build
+```
+***This generates the /dist folder, which Electron will open.***
+
+#### Rotating the Desktop App
+```bash
+cd electron
+npm run start
+```
 

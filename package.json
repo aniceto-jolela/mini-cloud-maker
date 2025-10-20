@@ -1,0 +1,26 @@
+{
+  "name": "mini-cloud-maker",
+  "version": "1.0.0",
+  "description": "[![visual studio code](https://img.shields.io/badge/ide-visual_studio_code_1.103.2-purple)](https://code.visualstudio.com/download)\r [![nodejs](https://img.shields.io/badge/nodejs-24.7.0-blue)](https://nodejs.org/en/download/current)\r [![npm](https://img.shields.io/badge/npm-11.5.1-blue)](https://nodejs.org/en/download/current)\r [![flask](https://img.shields.io/badge/flask-blue)](https://flask.palletsprojects.com/en/stable/installation/)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aniceto-jolela/mini-cloud-maker.git"
+  },
+  "keywords": [],
+  "author": "Aniceto",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/aniceto-jolela/mini-cloud-maker/issues"
+  },
+  "homepage": "https://github.com/aniceto-jolela/mini-cloud-maker#readme",
+  "dependencies": {
+    "concurrently": "^9.2.1",
+    "cross-env": "^10.1.0",
+    "electron": "^38.3.0"
+  }
+}
