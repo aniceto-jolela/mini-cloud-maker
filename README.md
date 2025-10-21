@@ -43,7 +43,8 @@ MiniCloudMaker/
 │       ├── components/
 │       │   ├── FileUpload.jsx
 │       │   ├── FileList.jsx
-│       │   └── StatsPanel.jsx
+|       │   ├── StatsPanel.jsx
+|       │   └── MinioControl.jsx 
 │       └── api.js             → Comunicação com o backend Flask
 │
 ├── electron/

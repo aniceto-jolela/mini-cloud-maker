@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify, send_file
 from flask_cors import CORS
 from minio import Minio
 import os, psutil, json
+from minio_manager import start_minio, stop_minio, is_minio_running
 
 app = Flask(__name__)
 CORS(app)
@@ -62,6 +63,21 @@ def get_stats():
         "used_gb": round(used / (1024**3), 2),
         "free_gb": round(free / (1024**3), 2)
     })
+
+@app.route("/api/minio/status", methods=["GET"])
+def minio_status():
+    running = is_minio_running()
+    return jsonify({"running": running})
+
+@app.route("/api/minio/start", methods=["POST"])
+def minio_start():
+    result = start_minio()
+    return jsonify({"status": result})
+
+@app.route("/api/minio/stop", methods=["POST"])
+def minio_stop():
+    result = stop_minio()
+    return jsonify({"status": result})
 
 if __name__ == "__main__":
     app.run(port=8080)

@@ -1,3 +1,4 @@
+import MinioControl from "../components/MinioControl";
 import FileUpload from "../components/FileUpload";
 import FileList from "../components/FileList";
 import StatsPanel from "../components/StatsPanel";
@@ -14,6 +15,7 @@ export default function Dashboard({ onLogout }) {
           Sair
         </button>
       </div>
+       <MinioControl />
       <FileUpload onUploadComplete={() => window.location.reload()} />
       <FileList />
       <StatsPanel />

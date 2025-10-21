@@ -27,6 +27,12 @@ pip install Flask
 ```bash
 pip install flask flask-cors minio psutil
 ```
+
+##### Rotate the minio in the terminal:
+````bash
+backend\storage\minio.exe server backend\data --console-address :9001
+```
+
 ##### Start backend:
 ```bash
 python backend/server.py
