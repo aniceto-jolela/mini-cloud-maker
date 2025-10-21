@@ -3,6 +3,7 @@ from flask_cors import CORS
 from minio import Minio
 import os, psutil, json
 from minio_manager import start_minio, stop_minio, is_minio_running
+from status_manager import get_storage_status, update_history, get_history
 
 app = Flask(__name__)
 CORS(app)
@@ -55,15 +56,17 @@ def delete_file(filename):
     client.remove_object(BUCKET_NAME, filename)
     return jsonify({"status": "ok", "message": f"{filename} removido!"})
 
-@app.route("/api/stats", methods=["GET"])
+@app.route("/api/status", methods=["GET"])
 def get_stats():
-    total, used, free = psutil.disk_usage(".")
+    usage = psutil.disk_usage(".")
     return jsonify({
-        "total_gb": round(total / (1024**3), 2),
-        "used_gb": round(used / (1024**3), 2),
-        "free_gb": round(free / (1024**3), 2)
+        "total_space_gb": round(usage.total / (1024**3), 2),
+        "used_space_gb": round(usage.used / (1024**3), 2),
+        "free_space_gb": round(usage.free / (1024**3), 2),
+        "used_percent": usage.percent
     })
 
+# Minio
 @app.route("/api/minio/status", methods=["GET"])
 def minio_status():
     running = is_minio_running()
@@ -78,6 +81,16 @@ def minio_start():
 def minio_stop():
     result = stop_minio()
     return jsonify({"status": result})
+
+# Status
+@app.route("/api/status/current", methods=["GET"])
+def stats_current():
+    stat = update_history()
+    return jsonify(stat)
+
+@app.route("/api/status/history", methods=["GET"])
+def stats_history():
+    return jsonify(get_history())
 
 if __name__ == "__main__":
     app.run(port=8080)

@@ -48,8 +48,12 @@ npm run dev
 - npm run dev
 http://localhost:5173
 
+##### Install Recharts (graphics):
+```bash
+npm install recharts
+```
 
-**CORS (Cross-Origin Resource Sharing):** Por padrão, o navegador bloqueia requisições entre portas diferentes (3000 do backend e 5173 do frontend). É necessario configurar o NestJS para permitir essas requisições
+**CORS (Cross-Origin Resource Sharing):** Por padrão, o navegador bloqueia requisições entre portas diferentes (3000 do backend e 5173 do frontend). É necessario configurar o Flask para permitir essas requisições
 
 
 Acessar MinIO console (UI):

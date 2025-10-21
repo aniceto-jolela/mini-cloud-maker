@@ -16,6 +16,6 @@ export async function deleteFile(filename) {
 }
 
 export async function getStats() {
-  const res = await fetch(`${API_URL}/stats`);
+  const res = await fetch(`${API_URL}/status`);
   return res.json();
 }
