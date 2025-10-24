@@ -34,6 +34,15 @@ def api_config():
         save_config(data)
         return jsonify({"message": "Configurações salvas com sucesso!"})
 
+@app.route("/api/config/reset", methods=["POST"])
+def api_reset_config():
+    from config_manager import reset_config
+    data = reset_config()
+    return jsonify({
+        "message": "Configurações restauradas para os padrões!",
+        "config": data
+    })
+
 # ---------------- MINIO CONTROL ----------------
 
 @app.route("/api/minio/start", methods=["POST"])

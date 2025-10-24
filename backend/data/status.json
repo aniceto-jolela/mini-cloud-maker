@@ -1,118 +1,6 @@
 [
   {
     "total_space_gb": 312.74,
-    "used_space_gb": 262.2,
-    "used_percent": 83.8,
-    "free_space_gb": 50.54,
-    "total_files": 29,
-    "timestamp": 1761165693
-  },
-  {
-    "total_space_gb": 312.74,
-    "used_space_gb": 262.2,
-    "used_percent": 83.8,
-    "free_space_gb": 50.54,
-    "total_files": 35,
-    "timestamp": 1761165752
-  },
-  {
-    "total_space_gb": 312.74,
-    "used_space_gb": 262.2,
-    "used_percent": 83.8,
-    "free_space_gb": 50.54,
-    "total_files": 35,
-    "timestamp": 1761165852
-  },
-  {
-    "total_space_gb": 312.74,
-    "used_space_gb": 262.2,
-    "used_percent": 83.8,
-    "free_space_gb": 50.54,
-    "total_files": 35,
-    "timestamp": 1761166098
-  },
-  {
-    "total_space_gb": 312.74,
-    "used_space_gb": 262.2,
-    "used_percent": 83.8,
-    "free_space_gb": 50.54,
-    "total_files": 35,
-    "timestamp": 1761166413
-  },
-  {
-    "total_space_gb": 312.74,
-    "used_space_gb": 262.13,
-    "used_percent": 83.8,
-    "free_space_gb": 50.61,
-    "total_files": 35,
-    "timestamp": 1761168256
-  },
-  {
-    "total_space_gb": 312.74,
-    "used_space_gb": 262.13,
-    "used_percent": 83.8,
-    "free_space_gb": 50.61,
-    "total_files": 22,
-    "timestamp": 1761168304
-  },
-  {
-    "total_space_gb": 312.74,
-    "used_space_gb": 262.13,
-    "used_percent": 83.8,
-    "free_space_gb": 50.61,
-    "total_files": 23,
-    "timestamp": 1761168320
-  },
-  {
-    "total_space_gb": 312.74,
-    "used_space_gb": 262.13,
-    "used_percent": 83.8,
-    "free_space_gb": 50.61,
-    "total_files": 23,
-    "timestamp": 1761169442
-  },
-  {
-    "total_space_gb": 312.74,
-    "used_space_gb": 262.14,
-    "used_percent": 83.8,
-    "free_space_gb": 50.61,
-    "total_files": 23,
-    "timestamp": 1761169816
-  },
-  {
-    "total_space_gb": 312.74,
-    "used_space_gb": 262.16,
-    "used_percent": 83.8,
-    "free_space_gb": 50.59,
-    "total_files": 24,
-    "timestamp": 1761171007
-  },
-  {
-    "total_space_gb": 312.74,
-    "used_space_gb": 262.16,
-    "used_percent": 83.8,
-    "free_space_gb": 50.59,
-    "total_files": 24,
-    "timestamp": 1761171160
-  },
-  {
-    "total_space_gb": 312.74,
-    "used_space_gb": 262.16,
-    "used_percent": 83.8,
-    "free_space_gb": 50.59,
-    "total_files": 24,
-    "timestamp": 1761171277
-  },
-  {
-    "total_space_gb": 312.74,
-    "used_space_gb": 262.16,
-    "used_percent": 83.8,
-    "free_space_gb": 50.58,
-    "total_files": 24,
-    "timestamp": 1761171536
-  },
-  {
-    "total_space_gb": 312.74,
     "used_space_gb": 262.14,
     "used_percent": 83.8,
     "free_space_gb": 50.6,
@@ -798,5 +686,117 @@
     "free_space_gb": 54.67,
     "total_files": 30,
     "timestamp": 1761317780
+  },
+  {
+    "total_space_gb": 312.74,
+    "used_space_gb": 258.12,
+    "used_percent": 82.5,
+    "free_space_gb": 54.63,
+    "total_files": 30,
+    "timestamp": 1761319632
+  },
+  {
+    "total_space_gb": 312.74,
+    "used_space_gb": 258.12,
+    "used_percent": 82.5,
+    "free_space_gb": 54.62,
+    "total_files": 30,
+    "timestamp": 1761320023
+  },
+  {
+    "total_space_gb": 312.74,
+    "used_space_gb": 257.81,
+    "used_percent": 82.4,
+    "free_space_gb": 54.93,
+    "total_files": 30,
+    "timestamp": 1761337523
+  },
+  {
+    "total_space_gb": 312.74,
+    "used_space_gb": 257.82,
+    "used_percent": 82.4,
+    "free_space_gb": 54.93,
+    "total_files": 30,
+    "timestamp": 1761338479
+  },
+  {
+    "total_space_gb": 312.74,
+    "used_space_gb": 257.82,
+    "used_percent": 82.4,
+    "free_space_gb": 54.93,
+    "total_files": 22,
+    "timestamp": 1761338508
+  },
+  {
+    "total_space_gb": 312.74,
+    "used_space_gb": 257.82,
+    "used_percent": 82.4,
+    "free_space_gb": 54.93,
+    "total_files": 23,
+    "timestamp": 1761338543
+  },
+  {
+    "total_space_gb": 312.74,
+    "used_space_gb": 257.82,
+    "used_percent": 82.4,
+    "free_space_gb": 54.93,
+    "total_files": 22,
+    "timestamp": 1761338573
+  },
+  {
+    "total_space_gb": 312.74,
+    "used_space_gb": 257.82,
+    "used_percent": 82.4,
+    "free_space_gb": 54.93,
+    "total_files": 23,
+    "timestamp": 1761338588
+  },
+  {
+    "total_space_gb": 312.74,
+    "used_space_gb": 257.82,
+    "used_percent": 82.4,
+    "free_space_gb": 54.93,
+    "total_files": 24,
+    "timestamp": 1761338623
+  },
+  {
+    "total_space_gb": 312.74,
+    "used_space_gb": 257.82,
+    "used_percent": 82.4,
+    "free_space_gb": 54.93,
+    "total_files": 30,
+    "timestamp": 1761338633
+  },
+  {
+    "total_space_gb": 312.74,
+    "used_space_gb": 257.82,
+    "used_percent": 82.4,
+    "free_space_gb": 54.92,
+    "total_files": 36,
+    "timestamp": 1761338706
+  },
+  {
+    "total_space_gb": 312.74,
+    "used_space_gb": 257.82,
+    "used_percent": 82.4,
+    "free_space_gb": 54.92,
+    "total_files": 42,
+    "timestamp": 1761338766
+  },
+  {
+    "total_space_gb": 312.74,
+    "used_space_gb": 257.82,
+    "used_percent": 82.4,
+    "free_space_gb": 54.92,
+    "total_files": 48,
+    "timestamp": 1761338826
+  },
+  {
+    "total_space_gb": 312.74,
+    "used_space_gb": 257.82,
+    "used_percent": 82.4,
+    "free_space_gb": 54.92,
+    "total_files": 49,
+    "timestamp": 1761341841
   }
 ]

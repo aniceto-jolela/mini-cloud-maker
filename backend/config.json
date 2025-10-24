@@ -1,7 +1,8 @@
 {
-  "access_key": "admin",
-  "auto_start": false,
-  "bucket_name": "animes",
-  "minio_port": 9005,
-  "secret_key": "minioadmin"
+  "minio_port": 9000,
+  "bucket_name": "default",
+  "access_key": "minioadmin",
+  "secret_key": "minioadmin",
+  "storage_path": "data",
+  "auto_start": false
 }
