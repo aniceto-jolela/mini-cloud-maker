@@ -1,4 +1,7 @@
 {
-  "username": "admin",
-  "password": "12345"
+  "access_key": "admin",
+  "auto_start": false,
+  "bucket_name": "animes",
+  "minio_port": 9005,
+  "secret_key": "minioadmin"
 }

@@ -4,7 +4,7 @@
 [![flask](https://img.shields.io/badge/flask-blue)](https://flask.palletsprojects.com/en/stable/installation/)
 
 # Mini Cloud Maker
-***MVP v1.2***
+***MVP v1.3***
 
 ***🧠 Mensagem-chave do Mini Cloud Maker***
 
@@ -24,14 +24,19 @@ Permitir que qualquer pessoa crie sua própria **mini nuvem** local com MinIO �
 - Exibir estatísticas básicas de uso;
 - Funcionar 100% offline.
 
-🧩 2. Estrutura Geral do Sistema v1.2
+🧩 2. Estrutura Geral do Sistema v1.3
 ````
 MiniCloudMaker/
 │
 ├── backend/
+│   ├── data/
+│   |   ├── status.json
+│   |   ├── .minio.sys/
+|   |   └── meu-bucket/
 │   ├── server.py              → API local Flask
 │   ├── minio_manager.py       → Controle do MinIO
-│   ├── config.json            → Configurações locais
+│   ├── config_manager.py      
+│   ├── config.json            → arquivo de configuração persistente
 │   └── storage/               → Dados e binário do MinIO
 │
 ├── frontend/                  → Projeto React + Vite
@@ -44,6 +49,7 @@ MiniCloudMaker/
 │       │   ├── FileUpload.jsx
 │       │   ├── FileList.jsx
 |       │   ├── StatsPanel.jsx
+│       |   ├── SettingsPanel.jsx
 |       │   └── MinioControl.jsx 
 │       └── api.js             → Comunicação com o backend Flask
 │
