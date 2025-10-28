@@ -1,8 +1,12 @@
 import MinioControl from "../components/MinioControl";
-import FileUpload from "../components/FileUpload";
-import FileList from "../components/FileList";
-import StatsPanel from "../components/StatsPanel";
+//import FileUpload from "../components/FileUpload";
+//import FileList from "../components/FileList";
+//import StatsPanel from "../components/StatsPanel";
 import SettingsPanel from "../components/SettingsPanel";
+import StoragePathSelector from "../components/StoragePathSelector";
+import UserManagement from "../components/UserManagement";
+import FileListWithActions from "../components/FileListWithActions";
+import LogsViewer from "../components/LogsViewer";
 
 export default function Dashboard({ onLogout }) {
   return (
@@ -17,10 +21,11 @@ export default function Dashboard({ onLogout }) {
         </button>
       </div>
        <MinioControl />
-      <FileUpload onUploadComplete={() => window.location.reload()} />
-      <FileList />
-      <StatsPanel />
-      <SettingsPanel /> 
+      <SettingsPanel />
+      <StoragePathSelector />
+      <UserManagement />
+      <FileListWithActions bucket={"default"} />
+      <LogsViewer />
     </div>
   );
 }

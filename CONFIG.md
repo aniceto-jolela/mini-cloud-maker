@@ -5,7 +5,7 @@
 
 
 
-###  Configuração do Backend (Flask)
+###  Configuração do Backend (Flask/FastAPI)
 
 ##### Virtual environments
 ```bash
@@ -25,10 +25,14 @@ pip install Flask
 
 ##### Install dependencies on the backend:
 ```bash
-pip install flask flask-cors minio psutil
+pip install -U bcrypt flask flask-cors minio psutil
+
+```
+```bash
+pip install PyJWT
 ```
 
-##### Rotate the minio in the terminal:
+##### Rotate the minio in the terminal!:
 ````bash
 backend\storage\minio.exe server backend\data --console-address :9001
 ```
@@ -82,4 +86,11 @@ npm run build
 cd electron
 npm run start
 ```
+
+### Install dependencies
+These libs allow running React (Vite) and Electron in parallel.
+```bash
+npm install electron concurrently wait-on cross-env
+```
+
 
