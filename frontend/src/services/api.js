@@ -27,16 +27,48 @@ export const apiDeleteUser = (username) =>
 export const apiResetUserPassword = (username, newPassword) =>
   fetchJSON(`${API_BASE}/users/${encodeURIComponent(username)}/password`, { method: "POST", body: JSON.stringify({ password: newPassword }) });
 
-/* Files */
-export const apiListFiles = (bucket) => fetchJSON(`${API_BASE}/files/${encodeURIComponent(bucket)}/list`);
-export const apiDeleteFile = (bucket, object) =>
-  fetchJSON(`${API_BASE}/files/${encodeURIComponent(bucket)}/delete`, { method: "POST", body: JSON.stringify({ object }) });
-export const apiRenameFile = (bucket, src, dst) =>
-  fetchJSON(`${API_BASE}/files/${encodeURIComponent(bucket)}/rename`, { method: "POST", body: JSON.stringify({ src, dst }) });
-export const apiSetMetadata = (bucket, object, metadata) =>
-  fetchJSON(`${API_BASE}/files/${encodeURIComponent(bucket)}/metadata`, { method: "POST", body: JSON.stringify({ object, metadata }) });
-export const apiCreateShare = (bucket, object, expiresSeconds) =>
-  fetchJSON(`${API_BASE}/files/${encodeURIComponent(bucket)}/share`, { method: "POST", body: JSON.stringify({ object, expires: expiresSeconds }) });
+/* Buckets */
+export const apiListBuckets = () => fetchJSON(`${API_BASE}/buckets`);
+export const apiCreateBucket = (name) =>
+  fetchJSON(`${API_BASE}/buckets`, { method: "POST", body: JSON.stringify({ name }) });
+export const apiDeleteBucket = (name) =>
+  fetchJSON(`${API_BASE}/buckets/${encodeURIComponent(name)}`, { method: "DELETE" });
+export const apiRenameBucket = (old_name, new_name) =>
+  fetchJSON(`${API_BASE}/buckets/rename`, { method: "POST", body: JSON.stringify({ old_name, new_name }) });
+
+/* FILES */
+export const apiListFiles = (bucket) => fetchJSON(`${API_BASE}/files/${encodeURIComponent(bucket)}`);
+export const apiUploadFile = (bucket, file) => {
+  const formData = new FormData();
+  formData.append("file", file);
+  return fetch(`${API_BASE}/files/${encodeURIComponent(bucket)}/upload`, {
+    method: "POST",
+    headers: { Authorization: "Bearer " + localStorage.getItem("token") },
+    body: formData,
+  }).then((r) => r.json());
+};
+export const apiDeleteFile = (bucket, filename) => fetchJSON(`${API_BASE}/files/${encodeURIComponent(bucket)}/${encodeURIComponent(filename)}`, { method: "DELETE" });
+export const apiDownloadFile = async (bucket, filename) => {
+  const token = localStorage.getItem("token");
+  const res = await fetch(
+    `${API_BASE}/files/${encodeURIComponent(bucket)}/${encodeURIComponent(filename)}/download`,
+    { headers: { Authorization: "Bearer " + token } }
+  );
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    alert(err.message || "Erro ao baixar arquivo.");
+    return;
+  }
+  const blob = await res.blob();
+  const url = window.URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  window.URL.revokeObjectURL(url);
+};
 
 /* Logs */
 export const apiGetLogs = () => fetchJSON(`${API_BASE}/logs`);

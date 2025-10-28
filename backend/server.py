@@ -5,8 +5,10 @@ from minio_manager import start_minio, stop_minio, is_minio_running
 from status_manager import get_storage_status, update_history, get_history
 from api_storage_path import storage_bp
 import threading, time
+import buckets.buckets_manager as buckets_manager
+import buckets.file_manager as file_manager
 
-import users_manager, logs_manager, files_manager
+import users_manager, logs_manager
 from decorator.require_auth import require_auth
 
 app = Flask(__name__)
@@ -113,83 +115,7 @@ def api_change_password():
     result = users_manager.change_password(request.user, new_pass)
     return jsonify(result)
 
-# ---------------- FILE OPERATIONS ----------------
-@app.route("/api/files/<bucket>/list", methods=["GET"])
-@require_auth
-def api_list(bucket):
-    try:
-        files_manager.ensure_bucket(bucket)
-        objs = files_manager.list_objects(bucket)
-        return jsonify({"ok":True, "files": objs})
-    except Exception as e:
-        return jsonify({"ok":False, "error": str(e)}), 500
-
-@app.route("/api/files/<bucket>/delete", methods=["POST"])
-@require_auth
-def api_delete(bucket):
-    data = request.json or {}
-    obj = data.get("object")
-    try:
-        files_manager.delete_object(bucket, obj)
-        logs_manager.log_event("delete", request.user, {"bucket":bucket,"object":obj})
-        return jsonify({"ok":True})
-    except Exception as e:
-        return jsonify({"ok":False,"error":str(e)}), 500
-
-@app.route("/api/files/<bucket>/rename", methods=["POST"])
-@require_auth
-def api_rename(bucket):
-    data = request.json or {}
-    src = data.get("src")
-    dst = data.get("dst")
-    try:
-        files_manager.rename_object(bucket, src, dst)
-        logs_manager.log_event("rename", request.user, {"bucket":bucket,"src":src,"dst":dst})
-        return jsonify({"ok":True})
-    except Exception as e:
-        return jsonify({"ok":False,"error":str(e)}), 500
-
-@app.route("/api/files/<bucket>/metadata", methods=["POST"])
-@require_auth
-def api_metadata(bucket):
-    data = request.json or {}
-    obj = data.get("object")
-    metadata = data.get("metadata", {})
-    try:
-        files_manager.set_object_metadata(bucket, obj, metadata)
-        logs_manager.log_event("set_metadata", request.user, {"bucket":bucket,"object":obj,"metadata":metadata})
-        return jsonify({"ok":True})
-    except Exception as e:
-        return jsonify({"ok":False,"error":str(e)}), 500
-
-# ---------------- SHARE LINK (PRESIGNED) ----------------
-@app.route("/api/files/<bucket>/share", methods=["POST"])
-@require_auth
-def api_share(bucket):
-    data = request.json or {}
-    obj = data.get("object")
-    expires = int(data.get("expires", 3600))
-    try:
-        url = files_manager.presigned_url(bucket, obj, expires_seconds=expires)
-        logs_manager.log_event("share", request.user, {"bucket":bucket,"object":obj,"expires":expires})
-        return jsonify({"ok":True, "url": url})
-    except Exception as e:
-        return jsonify({"ok":False,"error":str(e)}), 500
-
-# ---------------- LOGS ENDPOINTS ----------------
-@app.route("/api/logs", methods=["GET"])
-@require_auth
-def api_get_logs():
-    current = request.user
-    u = users_manager.find_user(current)
-    if not u or u.get("role") != "admin":
-        return jsonify({"ok":False,"message":"forbidden"}),403
-    events = logs_manager.load_events()
-    return jsonify({"ok":True, "events": events})
-
-
 # ---------------- MINIO CONTROL ----------------
-
 @app.route("/api/minio/start", methods=["POST"])
 def minio_start():
     result = start_minio()
@@ -206,8 +132,103 @@ def minio_status():
         "running": is_minio_running(),
         "status": get_storage_status()
     })
-# ---------------- ESTATÍSTICAS ----------------
 
+# ---------------- BUCKET MANAGEMENT ----------------
+@app.route("/api/buckets", methods=["GET"])
+@require_auth
+def api_list_buckets():
+    try:
+        buckets = buckets_manager.list_buckets()
+        return jsonify({"ok": True, "buckets": buckets})
+    except Exception as e:
+        return jsonify({"ok": False, "error": str(e)}), 500
+
+@app.route("/api/buckets", methods=["POST"])
+@require_auth
+def api_create_bucket():
+    data = request.json or {}
+    name = data.get("name")
+    if not name:
+        return jsonify({"ok": False, "message": "Nome obrigatório"}), 400
+    result = buckets_manager.create_bucket(name)
+    return jsonify(result)
+
+@app.route("/api/buckets/<bucket_name>", methods=["DELETE"])
+@require_auth
+def api_delete_bucket(bucket_name):
+    result = buckets_manager.delete_bucket(bucket_name)
+    return jsonify(result)
+
+@app.route("/api/buckets/rename", methods=["POST"])
+@require_auth
+def api_rename_bucket():
+    data = request.json or {}
+    old = data.get("old_name")
+    new = data.get("new_name")
+    if not old or not new:
+        return jsonify({"ok": False, "message": "Parâmetros inválidos"}), 400
+    result = buckets_manager.rename_bucket(old, new)
+    return jsonify(result)
+
+# ---------------- FILE MANAGEMENT ----------------
+@app.route("/api/files/<bucket>", methods=["GET"])
+@require_auth
+def api_list_files(bucket):
+    try:
+        files = file_manager.list_files(bucket)
+        return jsonify({"ok": True, "files": files})
+    except Exception as e:
+        return jsonify({"ok": False, "error": str(e)}), 500
+
+@app.route("/api/files/<bucket>/upload", methods=["POST"])
+@require_auth
+def api_upload_file(bucket):
+    if "file" not in request.files:
+        return jsonify({"ok": False, "message": "Nenhum arquivo enviado"}), 400
+    file = request.files["file"]
+    try:
+        res = file_manager.upload_file(bucket, file.stream, file.filename)
+        return jsonify(res)
+    except Exception as e:
+        return jsonify({"ok": False, "message": str(e)}), 500
+
+@app.route("/api/files/<bucket>/<filename>", methods=["DELETE"])
+@require_auth
+def api_delete_file(bucket, filename):
+    res = file_manager.delete_file(bucket, filename)
+    return jsonify(res)
+
+@app.route("/api/files/<bucket>/<filename>/download", methods=["GET"])
+@require_auth
+def api_download_file(bucket, filename):
+    return file_manager.download_file(bucket, filename)
+
+# ---------------- SHARE LINK (PRESIGNED) ----------------
+@app.route("/api/files/<bucket>/share", methods=["POST"])
+@require_auth
+def api_share(bucket):
+    data = request.json or {}
+    obj = data.get("object")
+    expires = int(data.get("expires", 3600))
+    try:
+        url = file_manager.presigned_url(bucket, obj, expires_seconds=expires)
+        logs_manager.log_event("share", request.user, {"bucket":bucket,"object":obj,"expires":expires})
+        return jsonify({"ok":True, "url": url})
+    except Exception as e:
+        return jsonify({"ok":False,"error":str(e)}), 500
+
+# ---------------- LOGS ENDPOINTS ----------------
+@app.route("/api/logs", methods=["GET"])
+@require_auth
+def api_get_logs():
+    current = request.user
+    u = users_manager.find_user(current)
+    if not u or u.get("role") != "admin":
+        return jsonify({"ok":False,"message":"forbidden"}),403
+    events = logs_manager.load_events()
+    return jsonify({"ok":True, "events": events})
+
+# ---------------- ESTATÍSTICAS ----------------
 @app.route("/api/status/current", methods=["GET"])
 def status_current():
     stat = update_history()

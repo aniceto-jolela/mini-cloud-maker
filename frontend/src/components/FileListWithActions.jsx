@@ -1,43 +1,78 @@
 import React, { useEffect, useState } from "react";
-import { apiListFiles } from "../services/api";
-import FileActions from "./FileActions";
+import { apiListFiles, apiUploadFile, apiDeleteFile, apiDownloadFile } from "../services/api";
 
 export default function FileListWithActions({ bucket }) {
   const [files, setFiles] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const load = async () => {
+  const loadFiles = async () => {
     setLoading(true);
     const res = await apiListFiles(bucket);
     setLoading(false);
-    if (res.ok === false) {
-      alert(res.message || "Erro ao listar ficheiros");
-      setFiles([]);
-    } else {
-      setFiles(Array.isArray(res) ? res : (res.files || []));
-    }
+    if (res.ok) setFiles(res.files);
   };
 
   useEffect(() => {
-    load();
-    // atualiza a cada 30s
-    const id = setInterval(load, 30000);
-    return () => clearInterval(id);
+    if (bucket) loadFiles();
   }, [bucket]);
 
+  const handleUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const res = await apiUploadFile(bucket, file);
+    alert(res.message);
+    e.target.value = "";
+    loadFiles();
+  };
+
+  const handleDelete = async (name) => {
+    if (!confirm(`Apagar arquivo '${name}'?`)) return;
+    const res = await apiDeleteFile(bucket, name);
+    alert(res.message);
+    loadFiles();
+  };
+
   return (
-    <div className="p-4 bg-white rounded shadow mt-4">
-      <h3 className="text-lg font-bold mb-3"> Arquivos ({bucket})</h3>
-      {loading ? <p>Carregando...</p> : (
-        <ul className="space-y-2">
-          {files.length === 0 && <li className="text-sm text-gray-600">Nenhum arquivo</li>}
-          {files.map(f => (
-            <li key={f} className="flex justify-between items-center border-b py-2">
-              <div className="truncate max-w-xs">{f}</div>
-              <FileActions bucket={bucket} filename={f} onDone={load} />
-            </li>
-          ))}
-        </ul>
+    <div className="p-4 bg-gray-50 rounded shadow mt-4">
+      <h3 className="text-lg font-bold mb-3">Arquivos em {bucket}</h3>
+      <input type="file" onChange={handleUpload} className="mb-3" />
+
+      {loading ? (
+        <p>Carregando...</p>
+      ) : files.length === 0 ? (
+        <p>Nenhum arquivo.</p>
+      ) : (
+        <table className="w-full text-left text-sm border">
+          <thead className="bg-gray-200">
+            <tr>
+              <th className="p-2">Nome</th>
+              <th className="p-2">Tamanho</th>
+              <th className="p-2">Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            {files.map((f) => (
+              <tr key={f.name} className="border-b">
+                <td className="p-2">{f.name}</td>
+                <td className="p-2">{(f.size / 1024).toFixed(1)} KB</td>
+                <td className="p-2 space-x-2">
+                  <button
+                    onClick={() => apiDownloadFile(bucket, f.name)}
+                    className="text-blue-600 hover:underline"
+                  >
+                    Baixar
+                  </button>
+                  <button
+                    onClick={() => handleDelete(f.name)}
+                    className="text-red-600 hover:underline"
+                  >
+                    Excluir
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       )}
     </div>
   );

@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import MinioControl from "../components/MinioControl";
 //import FileUpload from "../components/FileUpload";
 //import FileList from "../components/FileList";
@@ -5,10 +6,13 @@ import MinioControl from "../components/MinioControl";
 import SettingsPanel from "../components/SettingsPanel";
 import StoragePathSelector from "../components/StoragePathSelector";
 import UserManagement from "../components/UserManagement";
+import BucketManager from "../components/BucketManager";
 import FileListWithActions from "../components/FileListWithActions";
 import LogsViewer from "../components/LogsViewer";
 
 export default function Dashboard({ onLogout }) {
+  const [selectedBucket, setSelectedBucket] = useState("default");
+
   return (
     <div className="p-6 max-w-xl mx-auto text-center">
       <div className="flex justify-between items-center mb-4">
@@ -24,7 +28,8 @@ export default function Dashboard({ onLogout }) {
       <SettingsPanel />
       <StoragePathSelector />
       <UserManagement />
-      <FileListWithActions bucket={"default"} />
+      <BucketManager onSelect={setSelectedBucket} />
+      <FileListWithActions bucket={selectedBucket} />
       <LogsViewer />
     </div>
   );
