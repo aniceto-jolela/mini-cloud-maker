@@ -74,12 +74,32 @@ export const apiDownloadFile = async (bucket, filename) => {
 export const apiGetLogs = () => fetchJSON(`${API_BASE}/logs`);
 
 /* Download via browser (presigned link) */
-export const apiDownloadPresigned = async (bucket, object) => {
-  const res = await fetch(`${API_BASE}/files/${encodeURIComponent(bucket)}/share`, {
+export const apiGenerateShareLink = async (bucket, filename, expiresIn = 300) => {
+  const token = localStorage.getItem("token");
+  const res = await fetch(`${API_BASE}/files/${bucket}/${filename}/share`, {
     method: "POST",
-    headers: { "Content-Type": "application/json", ...authHeaders() },
-    body: JSON.stringify({ object, expires: 60 })
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + token,
+    },
+    body: JSON.stringify({ expires_in: expiresIn }),
   });
-  const data = await res.json();
-  return data;
+  return res.json();
+};
+
+export const apiGetActiveLinks = async () => {
+  const token = localStorage.getItem("token");
+  const res = await fetch(`${API_BASE}/share/active`, {
+    headers: { Authorization: "Bearer " + token },
+  });
+  return res.json();
+};
+
+export const apiCancelShareLink = async (sig) => {
+  const token = localStorage.getItem("token");
+  const res = await fetch(`${API_BASE}/share/${sig}/cancel`, {
+    method: "POST",
+    headers: { Authorization: "Bearer " + token },
+  });
+  return res.json();
 };

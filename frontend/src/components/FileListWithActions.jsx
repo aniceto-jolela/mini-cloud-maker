@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { apiListFiles, apiUploadFile, apiDeleteFile, apiDownloadFile } from "../services/api";
+import { apiListFiles, apiUploadFile, apiDeleteFile, apiDownloadFile, apiGenerateShareLink } from "../services/api";
 
 export default function FileListWithActions({ bucket }) {
   const [files, setFiles] = useState([]);
@@ -32,6 +32,33 @@ export default function FileListWithActions({ bucket }) {
     loadFiles();
   };
 
+  const handleDownload = async (name) => {
+  try {
+    const token = localStorage.getItem("token");
+    const res = await fetch(`/api/files/${bucket}/${name}/download`, {
+      headers: { Authorization: "Bearer " + token },
+    });
+    if (!res.ok) {
+      const data = await res.json();
+      alert(data.message || "Erro ao baixar arquivo");
+      return;
+    }
+
+    // Cria blob para forçar download local
+    const blob = await res.blob();
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = name;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    window.URL.revokeObjectURL(url);
+  } catch (err) {
+    alert("Falha no download");
+  }
+  };
+
   return (
     <div className="p-4 bg-gray-50 rounded shadow mt-4">
       <h3 className="text-lg font-bold mb-3">Arquivos em {bucket}</h3>
@@ -54,10 +81,14 @@ export default function FileListWithActions({ bucket }) {
             {files.map((f) => (
               <tr key={f.name} className="border-b">
                 <td className="p-2">{f.name}</td>
-                <td className="p-2">{(f.size / 1024).toFixed(1)} KB</td>
+                <td className="p-2">
+                  {f.size < 1024 * 1024
+                    ? (f.size / 1024).toFixed(1) + " KB"
+                    : (f.size / 1024 / 1024).toFixed(1) + " MB"}
+                </td>
                 <td className="p-2 space-x-2">
                   <button
-                    onClick={() => apiDownloadFile(bucket, f.name)}
+                    onClick={() => handleDownload(f.name)}
                     className="text-blue-600 hover:underline"
                   >
                     Baixar
@@ -67,6 +98,25 @@ export default function FileListWithActions({ bucket }) {
                     className="text-red-600 hover:underline"
                   >
                     Excluir
+                  </button>
+                  <button
+                    onClick={async () => {
+                      try {
+                        const res = await apiGenerateShareLink(bucket, f.name, 600);
+                        if (res.ok) {
+                          const fullUrl = res.link;
+                          await navigator.clipboard.writeText(fullUrl);
+                          alert(`🔗 Link copiado!\nExpira em ${res.expires_in / 60} min:\n${fullUrl}`);
+                        } else {
+                          alert(`Erro: ${res.message || "Falha ao gerar link temporário"}`);
+                        }
+                      } catch (e) {
+                        alert("Erro de rede ou servidor indisponível.");
+                      }
+                    }}
+                    className="text-green-600 hover:underline"
+                  >
+                    Compartilhar
                   </button>
                 </td>
               </tr>

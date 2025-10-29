@@ -8,6 +8,7 @@ import threading, time
 import buckets.buckets_manager as buckets_manager
 import buckets.file_manager as file_manager
 
+
 import users_manager, logs_manager
 from decorator.require_auth import require_auth
 
@@ -204,18 +205,35 @@ def api_download_file(bucket, filename):
     return file_manager.download_file(bucket, filename)
 
 # ---------------- SHARE LINK (PRESIGNED) ----------------
-@app.route("/api/files/<bucket>/share", methods=["POST"])
+@app.route("/api/files/<bucket>/<filename>/share", methods=["POST"])
 @require_auth
-def api_share(bucket):
+def api_generate_share_link(bucket, filename):
     data = request.json or {}
-    obj = data.get("object")
-    expires = int(data.get("expires", 3600))
-    try:
-        url = file_manager.presigned_url(bucket, obj, expires_seconds=expires)
-        logs_manager.log_event("share", request.user, {"bucket":bucket,"object":obj,"expires":expires})
-        return jsonify({"ok":True, "url": url})
-    except Exception as e:
-        return jsonify({"ok":False,"error":str(e)}), 500
+    expires_in = int(data.get("expires_in", 300))
+    link = file_manager.generate_temporary_link(bucket, filename, expires_in)
+    return jsonify({"ok": True, "link": link, "expires_in": expires_in})
+
+@app.route("/api/share/<bucket>/<filename>", methods=["GET"])
+def api_access_shared_file(bucket, filename):
+    exp = request.args.get("exp")
+    sig = request.args.get("sig")
+    if not (exp and sig):
+        return jsonify({"ok": False, "message": "invalid"}), 400
+    if not file_manager.validate_temporary_link(bucket, filename, exp, sig):
+        return jsonify({"ok": False, "message": "expired or invalid"}), 403
+    return file_manager.download_file(bucket, filename)
+
+@app.route("/api/share/active", methods=["GET"])
+@require_auth
+def api_get_active_links():
+    links = file_manager.get_active_links()
+    return jsonify({"ok": True, "links": links})
+
+@app.route("/api/share/<sig>/cancel", methods=["POST"])
+@require_auth
+def api_cancel_share(sig):
+    ok = file_manager.deactivate_link(sig)
+    return jsonify({"ok": ok})
 
 # ---------------- LOGS ENDPOINTS ----------------
 @app.route("/api/logs", methods=["GET"])

@@ -9,9 +9,11 @@ import UserManagement from "../components/UserManagement";
 import BucketManager from "../components/BucketManager";
 import FileListWithActions from "../components/FileListWithActions";
 import LogsViewer from "../components/LogsViewer";
+import ActiveLinksPanel from "../components/ActiveLinksPanel";
 
 export default function Dashboard({ onLogout }) {
   const [selectedBucket, setSelectedBucket] = useState("default");
+  const [showLinksPanel, setShowLinksPanel] = useState(false);
 
   return (
     <div className="p-6 max-w-xl mx-auto text-center">
@@ -31,6 +33,8 @@ export default function Dashboard({ onLogout }) {
       <BucketManager onSelect={setSelectedBucket} />
       <FileListWithActions bucket={selectedBucket} />
       <LogsViewer />
+      <button onClick={() => setShowLinksPanel(true)}>Ver Links Ativos</button>
+      {showLinksPanel && <ActiveLinksPanel onClose={() => setShowLinksPanel(false)} />}
     </div>
   );
 }

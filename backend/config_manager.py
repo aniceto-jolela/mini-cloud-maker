@@ -8,7 +8,8 @@ DEFAULT_CONFIG = {
     "secret_key": "minioadmin",
     "bucket_name": "default",
     "storage_path": "data",       
-    "auto_start": False
+    "auto_start": False,
+    "share_secret_key": "supersecretlinkkey"
 }
 
 def load_config():
@@ -31,7 +32,6 @@ def load_config():
 
     return config
 
-
 def save_config(config):
     """Salva as configurações em disco"""
     try:
@@ -42,7 +42,6 @@ def save_config(config):
     except Exception as e:
         print(f"[ERROR] Falha ao salvar config.json: {e}")
         return False
-
 
 def reset_config():
     """Restaura as configurações padrão"""
