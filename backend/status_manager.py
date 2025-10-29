@@ -20,15 +20,6 @@ def get_storage_status():
         "timestamp": int(time.time())
     }
 
-# -----------------------------------------------------------
-# Persistência de histórico
-# -----------------------------------------------------------
-# Será salvo no JSON: |
-# =================== |
-# Upload/download muda o uso em +1%	
-# Novo arquivo adicionado/removido
-# Sem alteração por 5 minutos
-# Nenhuma mudança recente - Não grava
 
 def load_history():
     """Carrega histórico salvo"""

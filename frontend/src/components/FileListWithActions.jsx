@@ -99,14 +99,58 @@ export default function FileListWithActions({ bucket }) {
                   >
                     Excluir
                   </button>
+                  
+                  
                   <button
                     onClick={async () => {
                       try {
-                        const res = await apiGenerateShareLink(bucket, f.name, 600);
+                        const modal = document.createElement("div");
+                        modal.className =
+                          "fixed inset-0 bg-black/50 flex items-center justify-center z-50";
+                        modal.innerHTML = `
+                          <div class="bg-white p-5 rounded-lg shadow-lg w-[90%] max-w-sm text-left">
+                            <h2 class="text-lg font-bold mb-3">Definir Expiração do Link</h2>
+                            <label class="block text-sm mb-2">Data e Hora de Expiração:</label>
+                            <input type="datetime-local" id="expInput" class="border w-full p-2 rounded mb-4" />
+                            <div class="flex justify-end space-x-2">
+                              <button id="cancelBtn" class="px-3 py-1 rounded bg-gray-300 hover:bg-gray-400">Cancelar</button>
+                              <button id="okBtn" class="px-3 py-1 rounded bg-blue-600 text-white hover:bg-blue-700">Gerar</button>
+                            </div>
+                          </div>
+                        `;
+                        document.body.appendChild(modal);
+
+                        const expInput = modal.querySelector("#expInput");
+                        const now = new Date();
+                        expInput.value = new Date(now.getTime() + 10 * 60 * 1000)
+                          .toISOString()
+                          .slice(0, 16); // valor padrão: +10 minutos
+
+                        const result = await new Promise((resolve) => {
+                          modal.querySelector("#cancelBtn").onclick = () => resolve(null);
+                          modal.querySelector("#okBtn").onclick = () =>
+                            resolve(expInput.value ? new Date(expInput.value) : null);
+                        });
+
+                        modal.remove();
+
+                        if (!result) return;
+
+                        // Calcula segundos até a data escolhida
+                        const expiresInSec = Math.max(60, Math.floor((result - Date.now()) / 1000));
+                        if (expiresInSec <= 0) {
+                          alert("A data de expiração deve ser no futuro.");
+                          return;
+                        }
+
+                        const res = await apiGenerateShareLink(bucket, f.name, expiresInSec);
                         if (res.ok) {
                           const fullUrl = res.link;
                           await navigator.clipboard.writeText(fullUrl);
-                          alert(`🔗 Link copiado!\nExpira em ${res.expires_in / 60} min:\n${fullUrl}`);
+                          const expDate = new Date(Date.now() + expiresInSec * 1000);
+                          alert(
+                            `Link copiado!\nExpira em: ${expDate.toLocaleString()}\n${fullUrl}`
+                          );
                         } else {
                           alert(`Erro: ${res.message || "Falha ao gerar link temporário"}`);
                         }
@@ -118,6 +162,9 @@ export default function FileListWithActions({ bucket }) {
                   >
                     Compartilhar
                   </button>
+
+
+
                 </td>
               </tr>
             ))}
