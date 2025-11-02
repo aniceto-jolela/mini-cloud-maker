@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-//import { getStats } from "../services/api";
+import { getStatus } from "../services/api";
 import { LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 
 
@@ -7,9 +7,9 @@ export default function StatsPanel() {
   const [status, setStatus] = useState(null);
   const [history, setHistory] = useState([]);
 
-  /*useEffect(() => {
-    getStats().then(setStats);
-  }, []);*/
+  useEffect(() => {
+    getStatus().then(setStatus);
+  }, []);
 
   const fetchStats = async () => {
     const res = await fetch("http://localhost:8080/api/status/current");

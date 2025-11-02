@@ -32,12 +32,24 @@ MiniCloudMaker/
 │   ├── data/
 │   |   ├── status.json
 │   |   ├── .minio.sys/
-|   |   └── meu-bucket/
+|   |   ├── meu-bucket/
+│   ├── buckets/
+│   |   ├── buckets_manager.py
+│   |   └── file_manager.py
+│   ├── utils/
+│   |   └── hashing.py
+│   ├── storage/
+│   |   └── minio.exe
+│   ├── logs_manager.py
+│   ├── shared_links.json
 │   ├── server.py              → API local Flask
 │   ├── minio_manager.py       → Controle do MinIO
 │   ├── config_manager.py      
 │   ├── api_storage_path.py
 │   ├── config.json            → arquivo de configuração persistente
+│   ├── status_manager.py
+│   ├── users_manager.py
+│   ├── users.json
 │   └── storage/               → Dados e binário do MinIO
 │
 ├── frontend/                  → Projeto React + Vite
@@ -47,12 +59,23 @@ MiniCloudMaker/
 │   └── src/
 │       ├── App.jsx
 │       ├── components/
-│       │   ├── FileUpload.jsx
-│       │   ├── FileList.jsx
-|       │   ├── StatsPanel.jsx
+|       │   ├── StatusPanel.jsx
 │       |   ├── SettingsPanel.jsx
 │       |   ├── StoragePathSelector.jsx
+│       |   ├── ActiveLinksPanel.jsx
+│       |   ├── BucketManager.jsx
+│       |   ├── FileListWithAction.jsx
+│       |   ├── LogsViewer.jsx
+│       |   ├── UserManagement.jsx
 |       │   └── MinioControl.jsx 
+│       ├── hooks/
+|       │   ├── useActiveLinksCount.js
+│       |   └── useAuth.js
+│       ├── pages/
+|       │   ├── Dashboard.jsx
+│       |   └── Login.jsx
+│       ├── services/
+|       │   └── api.js
 │       └── api.js             → Comunicação com o backend Flask
 │
 ├── electron/
@@ -64,6 +87,7 @@ MiniCloudMaker/
 │   └── setup_minio.py         → Baixa e inicia o MinIO localmente
 │
 ├── app.py                     → Inicializador geral (backend + frontend)
+├── CONFIG.md
 └── README.md
 
 ````
