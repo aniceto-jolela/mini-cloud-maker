@@ -1,22 +1,11 @@
 import { clsx } from 'clsx'
 import { XMarkIcon } from '@heroicons/react/20/solid'
 import React from 'react'
+import { useNavigate } from 'react-router-dom'
 
 export function Sidebar({ children, className, onClose }) {
   return (
     <div className={clsx(className, 'flex flex-col w-80 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 h-full')}>
-      {/* Botão fechar para mobile */}
-      {onClose && (
-        <div className="flex items-center justify-end p-4 lg:hidden border-b border-gray-200 dark:border-gray-700">
-          <button
-            type="button"
-            onClick={onClose}
-            className="p-2 text-gray-400 hover:text-gray-500 transition-colors duration-200"
-          >
-            <XMarkIcon className="size-5" />
-          </button>
-        </div>
-      )}
       {children}
     </div>
   )
@@ -54,13 +43,15 @@ export function SidebarSection({ children, className }) {
   )
 }
 
-export function SidebarItem({ href, children, className, isActive, ...props }) {
+export function SidebarItem({ to, children, className, isActive, ...props }) {
+  const navigate = useNavigate();
+
   return (
-    <a
-      href={href}
+    <button
+      onClick={() => navigate(to)}
       className={clsx(
         className,
-        'flex items-center gap-3 px-3 py-2 text-sm rounded-lg transition-all duration-200 ease-in-out',
+        'flex items-center gap-3 px-3 py-2 text-sm rounded-lg transition-all duration-200 ease-in-out w-full text-left',
         isActive
           ? 'bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300 border-r-2 border-primary-500 font-semibold shadow-sm'
           : 'text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white hover:shadow-md transform hover:-translate-y-0.5'
@@ -68,7 +59,7 @@ export function SidebarItem({ href, children, className, isActive, ...props }) {
       {...props}
     >
       {children}
-    </a>
+    </button>
   )
 }
 

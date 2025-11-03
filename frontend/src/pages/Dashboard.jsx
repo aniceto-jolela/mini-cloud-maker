@@ -1,46 +1,72 @@
-import React from "react";
+import React, { useMemo } from "react";
 import Menu from "../components/Menu";
+import { Link } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth";
 
-export default function Dashboard({ onLogout }) {
-  const modules = [
+export default function Dashboard() {
+  const { user, logout } = useAuth();
+
+  const modules = useMemo(() => [
     {
-      title: "🧰 Oficina",
+      title: "🧰 Oficina Inteligente",
       description: "Reparos e relatórios técnicos",
       color: "orange",
       icon: "🔧",
-      status: "Ativo"
+      status: "Ativo",
+      active: true,
+      path: "/oficina",
+      stats: "15 reparos este mês"
     },
     {
       title: "🎥 Estúdio de Mídia",
       description: "Armazenamento e entrega de fotos/vídeos",
       color: "purple",
       icon: "🎬",
-      status: "Ativo"
+      status: user?.modules?.includes('studio') ? "Ativo" : "Upgrade",
+      active: user?.modules?.includes('studio'),
+      path: user?.modules?.includes('studio') ? "/studio" : "/pricing",
+      stats: user?.modules?.includes('studio') ? "2.4GB usados" : "Disponível no Pro"
     },
     {
       title: "📂 Backup Local",
       description: "Backup automático e seguro",
       color: "green",
       icon: "💾",
-      status: "Ativo"
+      status: user?.modules?.includes('backup') ? "Ativo" : "Upgrade",
+      active: user?.modules?.includes('backup'),
+      path: user?.modules?.includes('backup') ? "/backup" : "/pricing",
+      stats: user?.modules?.includes('backup') ? "Backup ativo" : "Disponível no Pro"
     },
     {
       title: "📦 Gestão de Arquivos",
       description: "Gestão de arquivos para empresas",
       color: "blue",
       icon: "📁",
-      status: "Ativo"
+      status: user?.modules?.includes('files') ? "Ativo" : "Upgrade",
+      active: user?.modules?.includes('files'),
+      path: user?.modules?.includes('files') ? "/files" : "/pricing",
+      stats: user?.modules?.includes('files') ? "128 arquivos" : "Disponível no Business"
     }
-  ];
+  ], [user]);
 
-  const getColorClasses = (color) => {
-    const colors = {
-      orange: 'bg-orange-50 dark:bg-orange-900/20 border-orange-200 dark:border-orange-800 text-orange-800 dark:text-orange-200',
-      purple: 'bg-purple-50 dark:bg-purple-900/20 border-purple-200 dark:border-purple-800 text-purple-800 dark:text-purple-200',
-      green: 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800 text-green-800 dark:text-green-200',
-      blue: 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800 text-blue-800 dark:text-blue-200',
+  const getColorClasses = (color, active) => {
+    const baseColors = {
+      orange: 'from-orange-50 to-orange-100 border-orange-200 dark:from-orange-900/20 dark:to-orange-800/20 dark:border-orange-700',
+      purple: 'from-purple-50 to-purple-100 border-purple-200 dark:from-purple-900/20 dark:to-purple-800/20 dark:border-purple-700',
+      green: 'from-green-50 to-green-100 border-green-200 dark:from-green-900/20 dark:to-green-800/20 dark:border-green-700',
+      blue: 'from-blue-50 to-blue-100 border-blue-200 dark:from-blue-900/20 dark:to-blue-800/20 dark:border-blue-700',
     };
-    return colors[color] || colors.blue;
+    
+    const textColors = {
+      orange: 'text-orange-800 dark:text-orange-200',
+      purple: 'text-purple-800 dark:text-purple-200',
+      green: 'text-green-800 dark:text-green-200',
+      blue: 'text-blue-800 dark:text-blue-200',
+    };
+
+    return `bg-gradient-to-br ${baseColors[color]} ${textColors[color]} ${
+      !active ? 'opacity-60 grayscale' : 'hover:shadow-xl transition-all duration-300 hover:-translate-y-2'
+    }`;
   };
 
   return (
@@ -49,83 +75,165 @@ export default function Dashboard({ onLogout }) {
         {/* Header */}
         <div className="flex justify-between items-center mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Mini Cloud Maker</h1>
-            <p className="text-gray-600 dark:text-gray-400 mt-2">Plataforma completa de gestão em nuvem</p>
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+              Olá, {user?.name?.split(' ')[0] || 'Usuário'}! 👋
+            </h1>
+            <p className="text-gray-600 dark:text-gray-400 mt-2">
+              Bem-vindo de volta ao seu painel de controle
+            </p>
           </div>
-          <button
-            onClick={onLogout}
-            className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-150"
-          >
-            Sair
-          </button>
+          <div className="flex gap-3">
+            <Link
+              to="/pricing"
+              className="px-4 py-2 text-sm font-medium text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/20 border border-primary-200 dark:border-primary-800 rounded-xl hover:bg-primary-100 dark:hover:bg-primary-900/30 transition-all duration-200 transform hover:scale-105"
+            >
+              {user?.plan === 'free' ? '🚀 Fazer Upgrade' : '💎 Meu Plano'}
+            </Link>
+            <button
+              onClick={logout}
+              className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200"
+            >
+              Sair
+            </button>
+          </div>
         </div>
 
-        {/* Status Overview */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        {/* Welcome Card */}
+        {user?.plan === 'free' && (
+          <div className="bg-gradient-to-r from-primary-500 to-blue-600 rounded-2xl p-6 text-white mb-8 shadow-lg">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="text-xl font-semibold mb-2">🚀 Experimente o Mini Cloud Maker Pro</h3>
+                <p className="opacity-90">
+                  Desbloqueie todos os módulos e recursos avançados com 14 dias grátis
+                </p>
+              </div>
+              <Link
+                to="/pricing"
+                className="bg-white text-primary-600 px-6 py-3 rounded-xl font-semibold hover:bg-gray-100 transition-colors duration-200 transform hover:scale-105"
+              >
+                Ver Planos
+              </Link>
+            </div>
+          </div>
+        )}
+
+        {/* Modules Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
           {modules.map((module, index) => (
-            <div key={index} className={`${getColorClasses(module.color)} rounded-xl border p-6`}>
-              <div className="flex items-center justify-between mb-3">
-                <span className="text-2xl">{module.icon}</span>
-                <span className={`px-2 py-1 text-xs rounded-full ${
-                  module.color === 'orange' ? 'bg-orange-100 dark:bg-orange-800 text-orange-800 dark:text-orange-100' :
-                  module.color === 'purple' ? 'bg-purple-100 dark:bg-purple-800 text-purple-800 dark:text-purple-100' :
-                  module.color === 'green' ? 'bg-green-100 dark:bg-green-800 text-green-800 dark:text-green-100' :
-                  'bg-blue-100 dark:bg-blue-800 text-blue-800 dark:text-blue-100'
+            <Link
+              key={index}
+              to={module.path}
+              className={`${getColorClasses(module.color, module.active)} rounded-2xl border p-6 block`}
+            >
+              <div className="flex items-start justify-between mb-4">
+                <span className="text-3xl">{module.icon}</span>
+                <span className={`px-3 py-1 text-xs font-semibold rounded-full ${
+                  module.active 
+                    ? (module.color === 'orange' ? 'bg-orange-500 text-white' :
+                       module.color === 'purple' ? 'bg-purple-500 text-white' :
+                       module.color === 'green' ? 'bg-green-500 text-white' :
+                       'bg-blue-500 text-white')
+                    : 'bg-gray-500 text-white'
                 }`}>
                   {module.status}
                 </span>
               </div>
-              <h3 className="font-semibold text-lg mb-2">{module.title}</h3>
-              <p className="text-sm opacity-75">{module.description}</p>
-            </div>
+              <h3 className="font-bold text-lg mb-2">{module.title}</h3>
+              <p className="text-sm opacity-75 mb-3">{module.description}</p>
+              <p className="text-xs opacity-60">{module.stats}</p>
+            </Link>
           ))}
         </div>
 
-        {/* Quick Actions */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-8">
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Ações Rápidas</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <button className="p-4 text-left rounded-lg border border-gray-200 dark:border-gray-600 hover:border-primary-300 dark:hover:border-primary-600 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors">
-              <div className="text-primary-600 dark:text-primary-400 font-semibold">Upload de Arquivos</div>
-              <div className="text-sm text-gray-600 dark:text-gray-400 mt-1">Envie novos arquivos</div>
-            </button>
-            <button className="p-4 text-left rounded-lg border border-gray-200 dark:border-gray-600 hover:border-primary-300 dark:hover:border-primary-600 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors">
-              <div className="text-primary-600 dark:text-primary-400 font-semibold">Novo Backup</div>
-              <div className="text-sm text-gray-600 dark:text-gray-400 mt-1">Iniciar backup agora</div>
-            </button>
-            <button className="p-4 text-left rounded-lg border border-gray-200 dark:border-gray-600 hover:border-primary-300 dark:hover:border-primary-600 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors">
-              <div className="text-primary-600 dark:text-primary-400 font-semibold">Relatórios</div>
-              <div className="text-sm text-gray-600 dark:text-gray-400 mt-1">Gerar relatórios</div>
-            </button>
-            <button className="p-4 text-left rounded-lg border border-gray-200 dark:border-gray-600 hover:border-primary-300 dark:hover:border-primary-600 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors">
-              <div className="text-primary-600 dark:text-primary-400 font-semibold">Configurações</div>
-              <div className="text-sm text-gray-600 dark:text-gray-400 mt-1">Ajustar preferências</div>
-            </button>
+        {/* Quick Stats */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-200 dark:border-gray-700">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-gray-600 dark:text-gray-400 text-sm">Armazenamento</p>
+                <p className="text-2xl font-bold text-gray-900 dark:text-white">5.2GB</p>
+              </div>
+              <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/20 rounded-xl flex items-center justify-center">
+                <span className="text-blue-600 dark:text-blue-400">💾</span>
+              </div>
+            </div>
+          </div>
+          
+          <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-200 dark:border-gray-700">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-gray-600 dark:text-gray-400 text-sm">Reparos Ativos</p>
+                <p className="text-2xl font-bold text-gray-900 dark:text-white">3</p>
+              </div>
+              <div className="w-12 h-12 bg-orange-100 dark:bg-orange-900/20 rounded-xl flex items-center justify-center">
+                <span className="text-orange-600 dark:text-orange-400">🔧</span>
+              </div>
+            </div>
+          </div>
+          
+          <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-200 dark:border-gray-700">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-gray-600 dark:text-gray-400 text-sm">Plano Atual</p>
+                <p className="text-2xl font-bold text-gray-900 dark:text-white capitalize">{user?.plan}</p>
+              </div>
+              <div className="w-12 h-12 bg-green-100 dark:bg-green-900/20 rounded-xl flex items-center justify-center">
+                <span className="text-green-600 dark:text-green-400">💎</span>
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Recent Activity */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Atividade Recente</h2>
-          <div className="space-y-3">
-            {[
-              { action: "Backup concluído", time: "Há 2 minutos", type: "backup" },
-              { action: "Arquivo enviado", time: "Há 15 minutos", type: "upload" },
-              { action: "Relatório gerado", time: "Há 1 hora", type: "report" },
-              { action: "Usuário adicionado", time: "Há 2 horas", type: "user" }
-            ].map((activity, index) => (
-              <div key={index} className="flex items-center justify-between p-3 rounded-lg bg-gray-50 dark:bg-gray-700/50">
-                <div className="flex items-center gap-3">
-                  <div className={`w-2 h-2 rounded-full ${
-                    activity.type === 'backup' ? 'bg-green-500' :
-                    activity.type === 'upload' ? 'bg-blue-500' :
-                    activity.type === 'report' ? 'bg-orange-500' : 'bg-purple-500'
-                  }`} />
-                  <span className="text-gray-700 dark:text-gray-300">{activity.action}</span>
-                </div>
-                <span className="text-sm text-gray-500 dark:text-gray-400">{activity.time}</span>
+        {/* Quick Actions */}
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">
+            Ações Rápidas
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <Link 
+              to="/oficina/reparos" 
+              className="p-4 text-left rounded-xl border border-gray-200 dark:border-gray-600 hover:border-primary-300 dark:hover:border-primary-600 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-all duration-200 group"
+            >
+              <div className="text-primary-600 dark:text-primary-400 font-semibold flex items-center">
+                <span className="mr-2">🔧</span>
+                Novo Reparo
               </div>
-            ))}
+              <div className="text-sm text-gray-600 dark:text-gray-400 mt-1">Registrar serviço técnico</div>
+            </Link>
+            
+            <Link 
+              to="/files/upload" 
+              className="p-4 text-left rounded-xl border border-gray-200 dark:border-gray-600 hover:border-primary-300 dark:hover:border-primary-600 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-all duration-200 group"
+            >
+              <div className="text-primary-600 dark:text-primary-400 font-semibold flex items-center">
+                <span className="mr-2">📤</span>
+                Upload
+              </div>
+              <div className="text-sm text-gray-600 dark:text-gray-400 mt-1">Enviar arquivos</div>
+            </Link>
+            
+            <Link 
+              to="/backup/agendamentos" 
+              className="p-4 text-left rounded-xl border border-gray-200 dark:border-gray-600 hover:border-primary-300 dark:hover:border-primary-600 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-all duration-200 group"
+            >
+              <div className="text-primary-600 dark:text-primary-400 font-semibold flex items-center">
+                <span className="mr-2">🔄</span>
+                Backup
+              </div>
+              <div className="text-sm text-gray-600 dark:text-gray-400 mt-1">Agendar backup</div>
+            </Link>
+            
+            <Link 
+              to="/reports" 
+              className="p-4 text-left rounded-xl border border-gray-200 dark:border-gray-600 hover:border-primary-300 dark:hover:border-primary-600 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-all duration-200 group"
+            >
+              <div className="text-primary-600 dark:text-primary-400 font-semibold flex items-center">
+                <span className="mr-2">📊</span>
+                Relatórios
+              </div>
+              <div className="text-sm text-gray-600 dark:text-gray-400 mt-1">Gerar relatórios</div>
+            </Link>
           </div>
         </div>
       </div>

@@ -33,235 +33,230 @@ import {
 import {
   Cog6ToothIcon,
   HomeIcon,
-  InboxIcon,
+  WrenchScrewdriverIcon,
+  FilmIcon,
+  CloudArrowDownIcon,
+  FolderIcon,
+  ChartBarIcon,
+  DocumentChartBarIcon,
   MagnifyingGlassIcon,
-  MegaphoneIcon,
-  QuestionMarkCircleIcon,
-  SparklesIcon,
-  Square2StackIcon,
-  TicketIcon,
+  InboxIcon,
 } from '@heroicons/react/20/solid'
-import { useState } from 'react'
+import { useState, useCallback, memo } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
+import { useAuth } from '@/hooks/useAuth'
 
-export default function Menu({ children }) {
-  const [currentPath, setCurrentPath] = useState('/')
+// Componentes memoizados para evitar re-renders desnecessários
+const MemoizedSidebarItem = memo(SidebarItem);
+const MemoizedNavbarItem = memo(NavbarItem);
+const MemoizedDropdownItem = memo(DropdownItem);
 
-  const handleNavigation = (path) => {
-    setCurrentPath(path)
-  }
+function Menu({ children }) {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { user, logout } = useAuth();
+  
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
 
-  const isActive = (path) => currentPath === path
+  // useCallback para evitar recriação de funções
+  const handleNavigation = useCallback((path) => {
+    navigate(path);
+    setMobileSidebarOpen(false);
+  }, [navigate]);
+
+  const handleLogout = useCallback(() => {
+    logout();
+    navigate('/');
+  }, [logout, navigate]);
+
+  const isActive = useCallback((path) => location.pathname.startsWith(path), [location.pathname]);
 
   return (
     <SidebarLayout
       navbar={
-        <Navbar>
+        <Navbar onMenuClick={() => setMobileSidebarOpen(true)}>
           <NavbarSpacer />
           <NavbarSection>
-            <NavbarItem 
-              href="/search" 
+            <MemoizedNavbarItem 
+              to="/search" 
               aria-label="Search"
               isActive={isActive('/search')}
-              onClick={() => handleNavigation('/search')}
             >
               <MagnifyingGlassIcon className='size-5' />
-            </NavbarItem>
-            <NavbarItem 
-              href="/inbox" 
+            </MemoizedNavbarItem>
+            <MemoizedNavbarItem 
+              to="/inbox" 
               aria-label="Inbox"
               isActive={isActive('/inbox')}
-              onClick={() => handleNavigation('/inbox')}
             >
               <InboxIcon className='size-5' />
-            </NavbarItem>
+            </MemoizedNavbarItem>
             <Dropdown>
-              <DropdownButton as={NavbarItem}>
+              <DropdownButton as={MemoizedNavbarItem}>
                 <Avatar 
-                  src="https://media.licdn.com/dms/image/v2/D4D03AQHHwyXuH6pApA/profile-displayphoto-scale_200_200/B4DZkvlKanJQAY-/0/1757439897537?e=1763596800&v=beta&t=JADvkOKFBdKggiwWZxfcDeANdwEdgA9K5fnA1TEvWsc" 
+                  src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" 
                   square 
                 />
               </DropdownButton>
               <DropdownMenu className="min-w-64" anchor="bottom end">
-                <DropdownItem href="/my-profile" onClick={() => handleNavigation('/my-profile')}>
+                <MemoizedDropdownItem to="/profile">
                   <UserIcon className='size-4' />
-                  <DropdownLabel>Perfil</DropdownLabel>
-                </DropdownItem>
-                <DropdownItem href="/settings" onClick={() => handleNavigation('/settings')}>
+                  <DropdownLabel>Meu Perfil</DropdownLabel>
+                </MemoizedDropdownItem>
+                <MemoizedDropdownItem to="/settings">
                   <Cog8ToothIcon className='size-4' />
-                  <DropdownLabel>Settings</DropdownLabel>
-                </DropdownItem>
+                  <DropdownLabel>Configurações</DropdownLabel>
+                </MemoizedDropdownItem>
                 <DropdownDivider />
-                <DropdownItem href="/privacy-policy" onClick={() => handleNavigation('/privacy-policy')}>
+                <MemoizedDropdownItem to="/privacy">
                   <ShieldCheckIcon className='size-4' />
-                  <DropdownLabel>Privacy policy</DropdownLabel>
-                </DropdownItem>
-                <DropdownItem href="/share-feedback" onClick={() => handleNavigation('/share-feedback')}>
+                  <DropdownLabel>Privacidade</DropdownLabel>
+                </MemoizedDropdownItem>
+                <MemoizedDropdownItem to="/feedback">
                   <LightBulbIcon className='size-4' />
-                  <DropdownLabel>Share feedback</DropdownLabel>
-                </DropdownItem>
+                  <DropdownLabel>Enviar Feedback</DropdownLabel>
+                </MemoizedDropdownItem>
                 <DropdownDivider />
-                <DropdownItem href="/logout">
+                <MemoizedDropdownItem onClick={handleLogout}>
                   <ArrowRightStartOnRectangleIcon className='size-4' />
                   <DropdownLabel>Sair</DropdownLabel>
-                </DropdownItem>
+                </MemoizedDropdownItem>
               </DropdownMenu>
             </Dropdown>
           </NavbarSection>
         </Navbar>
       }
       sidebar={
-        <Sidebar>
+        <Sidebar onClose={() => setMobileSidebarOpen(false)}>
           <SidebarHeader>
             <Dropdown>
-              <DropdownButton as={SidebarItem} className="lg:mb-2.5">
+              <DropdownButton as={MemoizedSidebarItem} className="lg:mb-2.5">
                 <Avatar src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600" />
-                <SidebarLabel>Modulos</SidebarLabel>
+                <SidebarLabel>Mini Cloud Maker</SidebarLabel>
                 <ChevronDownIcon className='size-4 flex-shrink-0' />
               </DropdownButton>
               <DropdownMenu className="min-w-80 lg:min-w-64" anchor="bottom start">
-                <div className="px-4 py-1 text-sm font-medium text-zinc-500 dark:text-zinc-400">
-                  Gerencie seus recursos em nuvem
-                </div>
+                <MemoizedDropdownItem to="/settings">
+                  <Cog8ToothIcon className='size-4' />
+                  <DropdownLabel>Configurações</DropdownLabel>
+                </MemoizedDropdownItem>
                 <DropdownDivider />
-                <DropdownItem href="/teams/1">
+                <MemoizedDropdownItem to="/">
                   <Avatar src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600" size="sm" />
-                  <DropdownLabel>Oficina</DropdownLabel>
-                </DropdownItem>
-                 <DropdownItem href="/teams/2">
-                  <Avatar initials="WC" className="bg-purple-500 text-white" size="sm" />
-                  <DropdownLabel>Estúdio de mídia</DropdownLabel>
-                </DropdownItem>
-                <DropdownItem href="/teams/2">
-                  <Avatar initials="WC" className="bg-purple-500 text-white" size="sm" />
-                  <DropdownLabel>Gestão de arquivos</DropdownLabel>
-                </DropdownItem>
-                <DropdownItem href="/teams/2">
-                  <Avatar initials="WC" className="bg-purple-500 text-white" size="sm" />
-                  <DropdownLabel>Backup automático</DropdownLabel>
-                </DropdownItem>
+                  <DropdownLabel>Mini Cloud Maker</DropdownLabel>
+                </MemoizedDropdownItem>
+                <DropdownDivider />
+                <MemoizedDropdownItem to="/workspace/create">
+                  <PlusIcon className='size-4' />
+                  <DropdownLabel>Novo Workspace</DropdownLabel>
+                </MemoizedDropdownItem>
               </DropdownMenu>
             </Dropdown>
-            <SidebarSection className="max-lg:hidden">
-              <SidebarItem 
-                href="/search" 
-                isActive={isActive('/search')}
-                onClick={() => handleNavigation('/search')}
-              >
-                <MagnifyingGlassIcon className='size-5' />
-                <SidebarLabel>Search</SidebarLabel>
-              </SidebarItem>
-              <SidebarItem 
-                href="/inbox" 
-                isActive={isActive('/inbox')}
-                onClick={() => handleNavigation('/inbox')}
-              >
-                <InboxIcon className='size-5' />
-                <SidebarLabel>Inbox</SidebarLabel>
-              </SidebarItem>
-            </SidebarSection>
           </SidebarHeader>
           
           <SidebarBody>
-            {/* Seção principal de navegação */}
+            {/* Navegação Principal */}
             <SidebarSection>
-              <SidebarItem 
-                href="/" 
-                isActive={isActive('/')}
-                onClick={() => handleNavigation('/')}
+              <MemoizedSidebarItem 
+                to="/dashboard" 
+                isActive={isActive('/dashboard') || location.pathname === '/'}
               >
                 <HomeIcon className='size-5' />
-                <SidebarLabel>Home</SidebarLabel>
-              </SidebarItem>
-              <SidebarItem 
-                href="/events" 
-                isActive={isActive('/events')}
-                onClick={() => handleNavigation('/events')}
-              >
-                <Square2StackIcon className='size-5' />
-                <SidebarLabel>Events</SidebarLabel>
-              </SidebarItem>
-              <SidebarItem 
-                href="/orders" 
-                isActive={isActive('/orders')}
-                onClick={() => handleNavigation('/orders')}
-              >
-                <TicketIcon className='size-5' />
-                <SidebarLabel>Orders</SidebarLabel>
-              </SidebarItem>
-              <SidebarItem 
-                href="/settings" 
-                isActive={isActive('/settings')}
-                onClick={() => handleNavigation('/settings')}
-              >
-                <Cog6ToothIcon className='size-5' />
-                <SidebarLabel>Settings</SidebarLabel>
-              </SidebarItem>
-              <SidebarItem 
-                href="/broadcasts" 
-                isActive={isActive('/broadcasts')}
-                onClick={() => handleNavigation('/broadcasts')}
-              >
-                <MegaphoneIcon className='size-5' />
-                <SidebarLabel>Broadcasts</SidebarLabel>
-              </SidebarItem>
+                <SidebarLabel>Dashboard</SidebarLabel>
+              </MemoizedSidebarItem>
             </SidebarSection>
 
-            {/* Seção de eventos - só no desktop */}
-            <SidebarSection className="max-lg:hidden">
-              <SidebarHeading>Upcoming Events</SidebarHeading>
-              <SidebarItem 
-                href="/events/1" 
-                onClick={() => handleNavigation('/events/1')}
+            {/* Módulos da Plataforma */}
+            <SidebarSection>
+              <SidebarHeading>Módulos</SidebarHeading>
+              
+              {/* 🧰 Oficina */}
+              <MemoizedSidebarItem 
+                to="/oficina" 
+                isActive={isActive('/oficina')}
               >
-                Bear Hug: Live in Concert
-              </SidebarItem>
-              <SidebarItem 
-                href="/events/2" 
-                onClick={() => handleNavigation('/events/2')}
-              >
-                Viking People
-              </SidebarItem>
-              <SidebarItem 
-                href="/events/3" 
-                onClick={() => handleNavigation('/events/3')}
-              >
-                Six Fingers — DJ Set
-              </SidebarItem>
-              <SidebarItem 
-                href="/events/4" 
-                onClick={() => handleNavigation('/events/4')}
-              >
-                We All Look The Same
-              </SidebarItem>
+                <WrenchScrewdriverIcon className='size-5' />
+                <SidebarLabel>Oficina</SidebarLabel>
+              </MemoizedSidebarItem>
+
+              {/* 🎥 Estúdio de Mídia */}
+              {user?.modules?.includes('studio') && (
+                <MemoizedSidebarItem 
+                  to="/studio" 
+                  isActive={isActive('/studio')}
+                >
+                  <FilmIcon className='size-5' />
+                  <SidebarLabel>Estúdio de Mídia</SidebarLabel>
+                </MemoizedSidebarItem>
+              )}
+
+              {/* 📂 Backup Local */}
+              {user?.modules?.includes('backup') && (
+                <MemoizedSidebarItem 
+                  to="/backup" 
+                  isActive={isActive('/backup')}
+                >
+                  <CloudArrowDownIcon className='size-5' />
+                  <SidebarLabel>Backup Local</SidebarLabel>
+                </MemoizedSidebarItem>
+              )}
+
+              {/* 📦 Gestão de Arquivos */}
+              {user?.modules?.includes('files') && (
+                <MemoizedSidebarItem 
+                  to="/files" 
+                  isActive={isActive('/files')}
+                >
+                  <FolderIcon className='size-5' />
+                  <SidebarLabel>Gestão de Arquivos</SidebarLabel>
+                </MemoizedSidebarItem>
+              )}
+
+              {/* Se não tiver módulos pagos, mostrar link para planos */}
+              {(!user?.modules?.includes('studio') || !user?.modules?.includes('backup') || !user?.modules?.includes('files')) && (
+                <MemoizedSidebarItem to="/pricing">
+                  <PlusIcon className='size-5' />
+                  <SidebarLabel>Mais Módulos...</SidebarLabel>
+                </MemoizedSidebarItem>
+              )}
             </SidebarSection>
 
-            {/* Spacer para empurrar a próxima seção para baixo */}
+            {/* Ferramentas */}
+            <SidebarSection>
+              <SidebarHeading>Ferramentas</SidebarHeading>
+              <MemoizedSidebarItem 
+                to="/analytics" 
+                isActive={isActive('/analytics')}
+              >
+                <ChartBarIcon className='size-5' />
+                <SidebarLabel>Analytics</SidebarLabel>
+              </MemoizedSidebarItem>
+              <MemoizedSidebarItem 
+                to="/reports" 
+                isActive={isActive('/reports')}
+              >
+                <DocumentChartBarIcon className='size-5' />
+                <SidebarLabel>Relatórios</SidebarLabel>
+              </MemoizedSidebarItem>
+            </SidebarSection>
+
             <SidebarSpacer />
 
-            {/* Seção de suporte - fica logo acima do footer */}
+            {/* Suporte */}
             <SidebarSection>
-              <SidebarItem 
-                href="/support" 
-                isActive={isActive('/support')}
-                onClick={() => handleNavigation('/support')}
+              <MemoizedSidebarItem 
+                to="/help" 
+                isActive={isActive('/help')}
               >
-                <QuestionMarkCircleIcon className='size-5' />
-                <SidebarLabel>Support</SidebarLabel>
-              </SidebarItem>
-              <SidebarItem 
-                href="/changelog" 
-                isActive={isActive('/changelog')}
-                onClick={() => handleNavigation('/changelog')}
-              >
-                <SparklesIcon className='size-5' />
-                <SidebarLabel>Changelog</SidebarLabel>
-              </SidebarItem>
+                <Cog6ToothIcon className='size-5' />
+                <SidebarLabel>Ajuda & Suporte</SidebarLabel>
+              </MemoizedSidebarItem>
             </SidebarSection>
           </SidebarBody>
 
           <SidebarFooter className="max-lg:hidden">
             <Dropdown>
-              <DropdownButton as={SidebarItem}>
+              <DropdownButton as={MemoizedSidebarItem}>
                 <span className="flex min-w-0 items-center gap-3">
                   <Avatar 
                     src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" 
@@ -270,37 +265,30 @@ export default function Menu({ children }) {
                     alt="" 
                   />
                   <span className="min-w-0">
-                    <span className="block truncate text-sm/5 font-medium text-zinc-950 dark:text-white">Erica</span>
-                    <span className="block truncate text-xs/5 font-normal text-zinc-500 dark:text-zinc-400">
-                      erica@example.com
+                    <span className="block truncate text-sm/5 font-medium text-gray-900 dark:text-white">
+                      {user?.name || 'Usuário'}
+                    </span>
+                    <span className="block truncate text-xs/5 font-normal text-gray-500 dark:text-gray-400">
+                      {user?.email || 'email@exemplo.com'}
                     </span>
                   </span>
                 </span>
                 <ChevronUpIcon className='size-4 flex-shrink-0' />
               </DropdownButton>
               <DropdownMenu className="min-w-64" anchor="top start">
-                <DropdownItem href="/my-profile" onClick={() => handleNavigation('/my-profile')}>
+                <MemoizedDropdownItem to="/profile">
                   <UserIcon className='size-4' />
-                  <DropdownLabel>My profile</DropdownLabel>
-                </DropdownItem>
-                <DropdownItem href="/settings" onClick={() => handleNavigation('/settings')}>
+                  <DropdownLabel>Meu Perfil</DropdownLabel>
+                </MemoizedDropdownItem>
+                <MemoizedDropdownItem to="/settings">
                   <Cog8ToothIcon className='size-4' />
-                  <DropdownLabel>Settings</DropdownLabel>
-                </DropdownItem>
+                  <DropdownLabel>Configurações</DropdownLabel>
+                </MemoizedDropdownItem>
                 <DropdownDivider />
-                <DropdownItem href="/privacy-policy" onClick={() => handleNavigation('/privacy-policy')}>
-                  <ShieldCheckIcon className='size-4' />
-                  <DropdownLabel>Privacy policy</DropdownLabel>
-                </DropdownItem>
-                <DropdownItem href="/share-feedback" onClick={() => handleNavigation('/share-feedback')}>
-                  <LightBulbIcon className='size-4' />
-                  <DropdownLabel>Share feedback</DropdownLabel>
-                </DropdownItem>
-                <DropdownDivider />
-                <DropdownItem href="/logout">
+                <MemoizedDropdownItem onClick={handleLogout}>
                   <ArrowRightStartOnRectangleIcon className='size-4' />
-                  <DropdownLabel>Sign out</DropdownLabel>
-                </DropdownItem>
+                  <DropdownLabel>Sair</DropdownLabel>
+                </MemoizedDropdownItem>
               </DropdownMenu>
             </Dropdown>
           </SidebarFooter>
@@ -309,5 +297,7 @@ export default function Menu({ children }) {
     >
       {children}
     </SidebarLayout>
-  )
+  );
 }
+
+export default memo(Menu);

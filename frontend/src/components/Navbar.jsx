@@ -1,6 +1,7 @@
 import { clsx } from 'clsx'
 import { Bars3Icon } from '@heroicons/react/20/solid'
 import React from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 
 export function Navbar({ children, className, onMenuClick }) {
   return (
@@ -31,10 +32,12 @@ export function NavbarSpacer() {
   return <div className="flex-1" />
 }
 
-export function NavbarItem({ href, children, className, isActive, ...props }) {
+export function NavbarItem({ to, children, className, isActive, ...props }) {
+  const navigate = useNavigate();
+  
   return (
-    <a
-      href={href}
+    <button
+      onClick={() => navigate(to)}
       className={clsx(
         className,
         'flex items-center justify-center size-9 rounded-lg transition-all duration-200 ease-in-out',
@@ -45,6 +48,6 @@ export function NavbarItem({ href, children, className, isActive, ...props }) {
       {...props}
     >
       {children}
-    </a>
+    </button>
   )
 }

@@ -2,6 +2,7 @@ import { Menu, Transition } from '@headlessui/react'
 import { Fragment } from 'react'
 import { clsx } from 'clsx'
 import React from 'react'
+import { useNavigate } from 'react-router-dom'
 
 export function Dropdown({ children }) {
   return <Menu as="div" className="relative">{children}</Menu>
@@ -47,21 +48,23 @@ export function DropdownMenu({ children, className, anchor = 'bottom end' }) {
   )
 }
 
-export function DropdownItem({ href, children, className, ...props }) {
+export function DropdownItem({ to, children, className, ...props }) {
+  const navigate = useNavigate();
+  
   return (
     <Menu.Item>
       {({ active }) => (
-        <a
-          href={href}
+        <button
+          onClick={() => navigate(to)}
           className={clsx(
             className,
             active ? 'bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300' : 'text-gray-700 dark:text-gray-200',
-            'flex gap-3 items-center px-4 py-2 text-sm transition-all duration-150 ease-in-out transform hover:translate-x-1'
+            'flex gap-3 items-center px-4 py-2 text-sm transition-all duration-150 ease-in-out transform hover:translate-x-1 w-full text-left'
           )}
           {...props}
         >
           {children}
-        </a>
+        </button>
       )}
     </Menu.Item>
   )
