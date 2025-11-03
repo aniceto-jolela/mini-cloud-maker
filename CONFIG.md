@@ -1,7 +1,9 @@
 [![visual studio code](https://img.shields.io/badge/ide-visual_studio_code_1.103.2-purple)](https://code.visualstudio.com/download)
 [![nodejs](https://img.shields.io/badge/nodejs-24.7.0-blue)](https://nodejs.org/en/download/current)
-[![npm](https://img.shields.io/badge/npm-11.5.1-blue)](https://nodejs.org/en/download/current)
+[![npm](https://img.shields.io/badge/npm-11.5.1-black)](https://nodejs.org/en/download/current)
 [![flask](https://img.shields.io/badge/flask-blue)](https://flask.palletsprojects.com/en/stable/installation/)
+[![tailwindcss](https://img.shields.io/badge/tailwindcss-white)](https://tailwindcss.com/docs/installation/using-vite)
+[![catalyst](https://img.shields.io/badge/catalyst-cyan)](https://catalyst.tailwindui.com/docs)
 
 
 
@@ -93,4 +95,42 @@ These libs allow running React (Vite) and Electron in parallel.
 npm install electron concurrently wait-on cross-env
 ```
 
+
+## 🎨 Paleta de Cores Recomendada - Tema Azul Profissional
+
+#### Cores Principais:
+/* Azul Primário - Profissional e Confiável */
+primary: {
+  50: '#eef2ff',
+  100: '#e0e7ff', 
+  200: '#c7d2fe',
+  300: '#a5b4fc',
+  400: '#818cf8',
+  500: '#6366f1',  // Cor principal - Índigo
+  600: '#4f46e5',
+  700: '#4338ca',
+  800: '#3730a3',
+  900: '#312e81',}
+
+#### Cores de Apoio:
+
+/* Verde para sucesso/backup */
+green: {
+  500: '#10b981',  // Para backup, sucesso
+  600: '#059669',}
+
+/* Laranja para oficina/energia */
+orange: {
+  500: '#f59e0b',  // Para oficina, ação
+  600: '#d97706',}
+
+/* Roxo para criatividade/estúdio */
+purple: {
+  500: '#8b5cf6',  // Para estúdio, mídia
+  600: '#7c3aed',}
+
+/* Azul claro para arquivos/gestão */
+blue: {
+  500: '#3b82f6',  // Para gestão de arquivos
+  600: '#2563eb',}
 

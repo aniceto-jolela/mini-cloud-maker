@@ -4,7 +4,7 @@
 [![flask](https://img.shields.io/badge/flask-blue)](https://flask.palletsprojects.com/en/stable/installation/)
 
 # Mini Cloud Maker
-***MVP v1.5***
+***MVP v1.6***
 
 ***🧠 Mensagem-chave do Mini Cloud Maker***
 
@@ -24,69 +24,73 @@ Permitir que qualquer pessoa crie sua própria **mini nuvem** local com MinIO �
 - Exibir estatísticas básicas de uso;
 - Funcionar 100% offline.
 
-🧩 2. Estrutura Geral do Sistema v1.5
+#### Modulos (plataforma de mini-SaaS locais)
+1. 🧰 Oficina (reparos e relatórios)
+2. 🎥 Estúdio de mídia (armazenamento e entrega de fotos/vídeos)
+3. 📂 Backup local automático
+4. 📦 Gestão de arquivos para empresas
+
+
+## 2. Estrutura Geral do Sistema v1.6
 ````
 MiniCloudMaker/
 │
-├── backend/
-│   ├── data/
-│   |   ├── status.json
-│   |   ├── .minio.sys/
-|   |   ├── meu-bucket/
-│   ├── buckets/
-│   |   ├── buckets_manager.py
-│   |   └── file_manager.py
-│   ├── utils/
-│   |   └── hashing.py
-│   ├── storage/
-│   |   └── minio.exe
-│   ├── logs_manager.py
-│   ├── shared_links.json
-│   ├── server.py              → API local Flask
-│   ├── minio_manager.py       → Controle do MinIO
-│   ├── config_manager.py      
-│   ├── api_storage_path.py
-│   ├── config.json            → arquivo de configuração persistente
-│   ├── status_manager.py
-│   ├── users_manager.py
-│   ├── users.json
-│   └── storage/               → Dados e binário do MinIO
+│ ├── minio_manager.py # Start/stop, presigned links, healthchecks
+│ ├── db/ # Adaptador/abstração para storage (JSON ou SQLite)
+│ │ ├── store.py # API unificada (get, put, query, migrate)
+│ │ ├── json_store.py
+│ │ └── sqlite_store.py
+│ ├── modules/ # Cada módulo em subpasta
+│ │ ├── __init__.py
+│ │ └── oficina/
+│ │ ├── oficina_routes.py
+│ │ ├── oficina_manager.py
+│ │ ├── pdf_generator.py
+│ │ └── schema.json
+│ ├── shared_links.json
+│ ├── users.json
+│ ├── logs_manager.py
+│ ├── utils/
+│ │ ├── hashing.py
+│ │ ├── validators.py
+│ │ └── helpers.py
+│ └── storage/ # Binário do minio, dados do minio local
+│ ├── minio.exe
+│ └── data/
 │
-├── frontend/                  → Projeto React + Vite
-│   ├── index.html
-│   ├── package.json
-│   ├── vite.config.js
-│   └── src/
-│       ├── App.jsx
-│       ├── components/
-|       │   ├── StatusPanel.jsx
-│       |   ├── SettingsPanel.jsx
-│       |   ├── StoragePathSelector.jsx
-│       |   ├── ActiveLinksPanel.jsx
-│       |   ├── BucketManager.jsx
-│       |   ├── FileListWithAction.jsx
-│       |   ├── LogsViewer.jsx
-│       |   ├── UserManagement.jsx
-|       │   └── MinioControl.jsx 
-│       ├── hooks/
-|       │   ├── useActiveLinksCount.js
-│       |   └── useAuth.js
-│       ├── pages/
-|       │   ├── Dashboard.jsx
-│       |   └── Login.jsx
-│       ├── services/
-|       │   └── api.js
-│       └── api.js             → Comunicação com o backend Flask
+├── frontend/
+│ ├── package.json
+│ ├── vite.config.js
+│ ├── src/
+│ │ ├── main.jsx
+│ │ ├── app.jsx
+│ │ ├── routes.jsx
+│ │ ├── services/api.js # Comunicação com backend
+│ │ ├── modules/ # Frontend modules
+│ │ │ └── oficina/
+│ │ │ ├── OficinaDashboard.jsx
+│ │ │ ├── UploadFotos.jsx
+│ │ │ ├── ClienteForm.jsx
+│ │ │ ├── RelatorioPreview.jsx
+│ │ │ └── oficinaApi.js
+│ │ └── components/ # Reutilizáveis
+│ │ ├── Header.jsx
+│ │ ├── Sidebar.jsx
+│ │ └── FileListWithAction.jsx
+│ └── public/
 │
 ├── electron/
-│   ├── main.js             → Inicia o app Electron e o backend Python
-│   ├── preload.js          → Comunicação segura com o frontend
-│   └── package.json        → Configuração do app desktop
+│ ├── main.js
+│ └── preload.js
 │
 ├── installer/
-│   └── setup_minio.py         → Baixa e inicia o MinIO localmente
+│ ├── setup_minio.py
+│ └── installer_docs.md
 │
-├── app.py                     → Inicializador geral (backend + frontend)
+├── scripts/
+│ ├── migrate_json_to_sqlite.py
+│ └── build_release.sh
+│
 ├── CONFIG.md
 └── README.md
 
