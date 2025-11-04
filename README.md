@@ -72,12 +72,15 @@ MiniCloudMaker/
 │ │ ├── routes.jsx
 │ │ ├── services/api.js # Comunicação com backend
 │ │ ├── modules/ # Frontend modules
-│ │ │ └── oficina/
-│ │ │ ├── OficinaDashboard.jsx
-│ │ │ ├── UploadFotos.jsx
-│ │ │ ├── ClienteForm.jsx
-│ │ │ ├── RelatorioPreview.jsx
-│ │ │ └── oficinaApi.js
+│ │ │ ├── oficina/
+│ │ │ ├── backup/
+│ │ │ ├── escolas/
+│ │ │ ├── obras/
+│ │ │ ├── qualidade/
+│ │ │ ├── webhooks/
+│ │ │ ├── file-manager/
+│ │ │ ├── vistoria/
+│ │ │ └── studio/
 │ │ └── components/ # Reutilizáveis
 │ │ ├── Header.jsx
 │ │ ├── Sidebar.jsx
