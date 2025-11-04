@@ -18,6 +18,11 @@ import Vistoria from "./modules/vistoria/Vistoria";
 import Qualidade from "./modules/qualidade/Qualidade";
 import Settings from "./pages/Settings";
 import Profile from "./pages/Profile";
+import Privacy from "./pages/Privacy";
+import Feedback from "./pages/Feedback";
+import Analytics from "./pages/Analytics";
+import Reports from "./pages/Reports";
+import Help from "./pages/Help";
 
 function AppRoutes() {
   const { user } = useAuth();
@@ -49,6 +54,11 @@ function AppRoutes() {
       {/* Configurações */}
       <Route path="/settings" element={user ? <Settings /> : <Navigate to="/login" />} />
       <Route path="/profile" element={user ? <Profile /> : <Navigate to="/login" />} />
+      <Route path="/privacy" element={user ? <Privacy /> : <Navigate to="/login" />} />
+      <Route path="/feedback" element={user ? <Feedback /> : <Navigate to="/login" />} />
+      <Route path="/analytics" element={user ? <Analytics /> : <Navigate to="/login" />} />
+      <Route path="/reports" element={user ? <Reports /> : <Navigate to="/login" />} />
+      <Route path="/help" element={user ? <Help /> : <Navigate to="/login" />} />
       
       {/* Rota fallback */}
       <Route path="*" element={<Navigate to="/" />} />
