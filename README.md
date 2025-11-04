@@ -29,6 +29,11 @@ Permitir que qualquer pessoa crie sua própria **mini nuvem** local com MinIO �
 2. 🎥 Estúdio de mídia (armazenamento e entrega de fotos/vídeos)
 3. 📂 Backup local automático
 4. 📦 Gestão de arquivos para empresas
+5. Sistema de Vistoria
+6. Controlo de Qualidade
+7. Testador de Webhooks
+8. Inspector Escolar
+9. Gestor de Obras
 
 
 ## 2. Estrutura Geral do Sistema v1.6

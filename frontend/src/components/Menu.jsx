@@ -41,6 +41,11 @@ import {
   DocumentChartBarIcon,
   MagnifyingGlassIcon,
   InboxIcon,
+  CodeBracketIcon, // Para webhooks
+  BuildingStorefrontIcon, // Para obras
+  AcademicCapIcon, // Para escolas
+  TruckIcon, // Para vistoria
+  SparklesIcon,
 } from '@heroicons/react/20/solid'
 import { useState, useCallback, memo } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
@@ -94,7 +99,7 @@ function Menu({ children }) {
             <Dropdown>
               <DropdownButton as={MemoizedNavbarItem}>
                 <Avatar 
-                  src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" 
+                  src="https://media.licdn.com/dms/image/v2/D4D03AQHHwyXuH6pApA/profile-displayphoto-scale_200_200/B4DZkvlKanJQAY-/0/1757439897537?e=1763596800&v=beta&t=JADvkOKFBdKggiwWZxfcDeANdwEdgA9K5fnA1TEvWsc" 
                   square 
                 />
               </DropdownButton>
@@ -146,9 +151,9 @@ function Menu({ children }) {
                   <DropdownLabel>Mini Cloud Maker</DropdownLabel>
                 </MemoizedDropdownItem>
                 <DropdownDivider />
-                <MemoizedDropdownItem to="/workspace/create">
+                <MemoizedDropdownItem to="/pricing">
                   <PlusIcon className='size-4' />
-                  <DropdownLabel>Novo Workspace</DropdownLabel>
+                  <DropdownLabel>Ver Todos os 9 Módulos</DropdownLabel>
                 </MemoizedDropdownItem>
               </DropdownMenu>
             </Dropdown>
@@ -168,7 +173,7 @@ function Menu({ children }) {
 
             {/* Módulos da Plataforma */}
             <SidebarSection>
-              <SidebarHeading>Módulos</SidebarHeading>
+              <SidebarHeading>Meus Módulos</SidebarHeading>
               
               {/* 🧰 Oficina */}
               <MemoizedSidebarItem 
@@ -176,8 +181,63 @@ function Menu({ children }) {
                 isActive={isActive('/oficina')}
               >
                 <WrenchScrewdriverIcon className='size-5' />
-                <SidebarLabel>Oficina</SidebarLabel>
+                <SidebarLabel>Oficina Inteligente</SidebarLabel>
               </MemoizedSidebarItem>
+
+              {/* 🔄 Webhooks */}
+              {user?.modules?.includes('webhooks') && (
+                <MemoizedSidebarItem 
+                  to="/webhooks" 
+                  isActive={isActive('/webhooks')}
+                >
+                  <CodeBracketIcon className='size-5' />
+                  <SidebarLabel>Testador de Webhooks</SidebarLabel>
+                </MemoizedSidebarItem>
+              )}
+
+              {/* 🏗️ Obras */}
+              {user?.modules?.includes('obras') && (
+                <MemoizedSidebarItem 
+                  to="/obras" 
+                  isActive={isActive('/obras')}
+                >
+                  <BuildingStorefrontIcon className='size-5' />
+                  <SidebarLabel>Gestor de Obras</SidebarLabel>
+                </MemoizedSidebarItem>
+              )}
+
+              {/* 🏫 Escolas */}
+              {user?.modules?.includes('escolas') && (
+                <MemoizedSidebarItem 
+                  to="/escolas" 
+                  isActive={isActive('/escolas')}
+                >
+                  <AcademicCapIcon className='size-5' />
+                  <SidebarLabel>Inspector Escolar</SidebarLabel>
+                </MemoizedSidebarItem>
+              )}
+
+              {/* 🚗 Vistoria */}
+              {user?.modules?.includes('vistoria') && (
+                <MemoizedSidebarItem 
+                  to="/vistoria" 
+                  isActive={isActive('/vistoria')}
+                >
+                  <TruckIcon className='size-5' />
+                  <SidebarLabel>Sistema de Vistoria</SidebarLabel>
+                </MemoizedSidebarItem>
+              )}
+
+              {/* 🍽️ Qualidade */}
+              {user?.modules?.includes('qualidade') && (
+                <MemoizedSidebarItem 
+                  to="/qualidade" 
+                  isActive={isActive('/qualidade')}
+                >
+                  <ChartBarIcon className='size-5' />
+                  <SidebarLabel>Controlo de Qualidade</SidebarLabel>
+                </MemoizedSidebarItem>
+              )}
 
               {/* 🎥 Estúdio de Mídia */}
               {user?.modules?.includes('studio') && (
@@ -197,7 +257,7 @@ function Menu({ children }) {
                   isActive={isActive('/backup')}
                 >
                   <CloudArrowDownIcon className='size-5' />
-                  <SidebarLabel>Backup Local</SidebarLabel>
+                  <SidebarLabel>Backup Automático</SidebarLabel>
                 </MemoizedSidebarItem>
               )}
 
@@ -213,10 +273,10 @@ function Menu({ children }) {
               )}
 
               {/* Se não tiver módulos pagos, mostrar link para planos */}
-              {(!user?.modules?.includes('studio') || !user?.modules?.includes('backup') || !user?.modules?.includes('files')) && (
+              {(user?.modules?.length <= 1) && (
                 <MemoizedSidebarItem to="/pricing">
                   <PlusIcon className='size-5' />
-                  <SidebarLabel>Mais Módulos...</SidebarLabel>
+                  <SidebarLabel>+8 Módulos Disponíveis...</SidebarLabel>
                 </MemoizedSidebarItem>
               )}
             </SidebarSection>
@@ -251,6 +311,13 @@ function Menu({ children }) {
                 <Cog6ToothIcon className='size-5' />
                 <SidebarLabel>Ajuda & Suporte</SidebarLabel>
               </MemoizedSidebarItem>
+              <MemoizedSidebarItem 
+                to="/pricing" 
+                isActive={isActive('/pricing')}
+              >
+                <SparklesIcon className='size-5' />
+                <SidebarLabel>Ver Todos os Módulos</SidebarLabel>
+              </MemoizedSidebarItem>
             </SidebarSection>
           </SidebarBody>
 
@@ -259,7 +326,7 @@ function Menu({ children }) {
               <DropdownButton as={MemoizedSidebarItem}>
                 <span className="flex min-w-0 items-center gap-3">
                   <Avatar 
-                    src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" 
+                    src="https://media.licdn.com/dms/image/v2/D4D03AQHHwyXuH6pApA/profile-displayphoto-scale_200_200/B4DZkvlKanJQAY-/0/1757439897537?e=1763596800&v=beta&t=JADvkOKFBdKggiwWZxfcDeANdwEdgA9K5fnA1TEvWsc" 
                     className="size-10" 
                     square 
                     alt="" 

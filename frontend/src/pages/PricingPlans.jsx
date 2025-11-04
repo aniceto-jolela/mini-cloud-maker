@@ -777,7 +777,7 @@ export default function Pricing() {
       <footer className="border-t border-gray-200/50 dark:border-gray-700/50 py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <p className="text-gray-600 dark:text-gray-400 text-sm">
-            © 2024 Mini Cloud Maker. 9 módulos especializados - Licenças permanentes - Instalação na sua infraestrutura.
+            © 2025 Mini Cloud Maker. 9 módulos especializados - Licenças permanentes - Instalação na sua infraestrutura.
           </p>
         </div>
       </footer>

@@ -99,14 +99,20 @@ export function AuthProvider({ children }) {
 };
 
 const getModulesForOrder = (order) => {
-  let modules = ['oficina']; // Sempre inclui o módulo oficina
+  let modules = ['oficina'];
   
   if (order.model === 'COMPLETE') {
-    modules = ['oficina', 'studio', 'backup', 'files'];
+    modules = [
+      'oficina', 'webhooks', 'obras', 'escolas', 
+      'vistoria', 'qualidade', 'studio', 'backup', 'files'
+    ];
   } else if (order.model === 'MODULAR') {
     modules = [...modules, ...order.modules];
   } else if (order.model === 'ENTERPRISE') {
-    modules = ['oficina', 'studio', 'backup', 'files', 'enterprise'];
+    modules = [
+      'oficina', 'webhooks', 'obras', 'escolas', 
+      'vistoria', 'qualidade', 'studio', 'backup', 'files', 'enterprise'
+    ];
   }
   
   return modules;

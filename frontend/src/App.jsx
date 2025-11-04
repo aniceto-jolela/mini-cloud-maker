@@ -11,6 +11,11 @@ import Oficina from "./modules/oficina/Oficina";
 import Studio from "./modules/studio/Studio";
 import Backup from "./modules/backup/Backup";
 import FileManager from "./modules/file-manager/FileManager";
+import Webhooks from "./modules/webhooks/Webhooks";
+import Obras from "./modules/obras/Obras";
+import Escolas from "./modules/escolas/Escolas";
+import Vistoria from "./modules/vistoria/Vistoria";
+import Qualidade from "./modules/qualidade/Qualidade";
 import Settings from "./pages/Settings";
 import Profile from "./pages/Profile";
 
@@ -31,11 +36,16 @@ function AppRoutes() {
       <Route path="/dashboard" element={user ? <Dashboard /> : <Navigate to="/login" />} />
       
       {/* Módulos (verificar se usuário tem acesso) */}
-      <Route path="/oficina/*" element={user ? <Oficina /> : <Navigate to="/login" />} />
+      <Route path="/oficina/*" element={user ? <Obras /> : <Navigate to="/login" />} />
       <Route path="/studio/*" element={user && user.modules?.includes('studio') ? <Studio /> : <Navigate to="/pricing" />} />
       <Route path="/backup/*" element={user && user.modules?.includes('backup') ? <Backup /> : <Navigate to="/pricing" />} />
       <Route path="/files/*" element={user && user.modules?.includes('files') ? <FileManager /> : <Navigate to="/pricing" />} />
-      
+      <Route path="/webhooks/*" element={user && user.modules?.includes('webhooks') ? <Webhooks /> : <Navigate to="/pricing" />} />
+      <Route path="/obras/*" element={user && user.modules?.includes('obras') ? <Obras /> : <Navigate to="/pricing" />} />
+      <Route path="/escolas/*" element={user && user.modules?.includes('escolas') ? <Escolas /> : <Navigate to="/pricing" />} />
+      <Route path="/vistoria/*" element={user && user.modules?.includes('vistoria') ? <Vistoria /> : <Navigate to="/pricing" />} />
+      <Route path="/qualidade/*" element={user && user.modules?.includes('qualidade') ? <Qualidade /> : <Navigate to="/pricing" />} />
+
       {/* Configurações */}
       <Route path="/settings" element={user ? <Settings /> : <Navigate to="/login" />} />
       <Route path="/profile" element={user ? <Profile /> : <Navigate to="/login" />} />
