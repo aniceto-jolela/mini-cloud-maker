@@ -36,7 +36,7 @@ function AppRoutes() {
       <Route path="/dashboard" element={user ? <Dashboard /> : <Navigate to="/login" />} />
       
       {/* Módulos (verificar se usuário tem acesso) */}
-      <Route path="/oficina/*" element={user ? <Obras /> : <Navigate to="/login" />} />
+      <Route path="/oficina/*" element={user ? <Oficina /> : <Navigate to="/login" />} />
       <Route path="/studio/*" element={user && user.modules?.includes('studio') ? <Studio /> : <Navigate to="/pricing" />} />
       <Route path="/backup/*" element={user && user.modules?.includes('backup') ? <Backup /> : <Navigate to="/pricing" />} />
       <Route path="/files/*" element={user && user.modules?.includes('files') ? <FileManager /> : <Navigate to="/pricing" />} />
